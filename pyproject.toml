@@ -1,0 +1,108 @@
+[project]
+name = "vigicrues-client"
+version = "0.1.0.dev0"
+description = "Asynchronous Python client for Vigicrues, the French flood vigilance service"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    { name = "Mathieu Cartoixa" },
+]
+keywords = ["vigicrues", "flood", "hydrology", "france", "asyncio"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Framework :: AsyncIO",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
+    "Topic :: Scientific/Engineering :: Hydrology",
+    "Typing :: Typed",
+]
+requires-python = ">=3.11"
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/mcartoixa/vigicrues-client"
+Issues = "https://github.com/mcartoixa/vigicrues-client/issues"
+
+[dependency-groups]
+dev = [
+    "invoke>=3.0.3",
+    "mypy>=2.4.1",
+    "pygount>=3.2.0",
+    "pytest>=9.2.0",
+    "pytest-asyncio>=1.5.0",
+    "pytest-cov>=7.1.0",
+    "ruff>=0.17.5",
+]
+
+[build-system]
+requires = ["uv_build>=0.13.9,<0.14.0"]
+build-backend = "uv_build"
+
+[tool.uv]
+# Supply-chain cooldown for development and CI: ignore releases uploaded in the last 7 days, the time
+# it usually takes for a malicious release to be detected and removed. Does not affect library users.
+exclude-newer = "7 days"
+
+[tool.ruff]
+cache-dir = ".tmp/ruff-cache"
+
+[tool.ruff.lint]
+select = [
+    "ASYNC", # flake8-async: blocking calls and other pitfalls in async code
+    "B",     # flake8-bugbear: likely bugs and design problems
+    "C4",    # flake8-comprehensions: unnecessary or convoluted comprehensions
+    "D",     # pydocstyle: docstrings on the public API
+    "E",     # pycodestyle errors
+    "F",     # Pyflakes: unused imports, undefined names...
+    "I",     # isort: import sorting
+    "N",     # pep8-naming
+    "PT",    # flake8-pytest-style
+    "RUF",   # Ruff-specific rules
+    "SIM",   # flake8-simplify
+    "UP",    # pyupgrade: modern syntax for the minimum Python version
+    "W",     # pycodestyle warnings
+]
+ignore = [
+    "D105", # Magic methods (__aenter__, __repr__...) have well-known meanings
+    "D107", # __init__ arguments are documented in the class docstring (Google style)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["D"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.mypy]
+# Mypy resolves relative paths from the current directory: anchor them to this file's directory.
+cache_dir = "$MYPY_CONFIG_FILE_DIR/.tmp/mypy-cache"
+files = ["$MYPY_CONFIG_FILE_DIR/src", "$MYPY_CONFIG_FILE_DIR/tests", "$MYPY_CONFIG_FILE_DIR/tasks.py"]
+# Check against the oldest supported version, so that newer standard library APIs are reported.
+python_version = "3.11"
+strict = true
+warn_unreachable = true
+enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
+
+[tool.pytest]
+addopts = ["--import-mode=importlib", "-m", "not live"]
+asyncio_default_fixture_loop_scope = "function"
+asyncio_mode = "auto"
+cache_dir = ".tmp/pytest-cache"
+filterwarnings = ["error"]
+markers = [
+    "live: calls the real Vigicrues service (deselected by default, run with `-m live`)",
+]
+strict = true
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+source_pkgs = ["vigicrues_client"]

@@ -1,0 +1,17 @@
+{
+  "[python]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit",
+      "source.organizeImports": "explicit"
+    },
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.formatOnSave": true
+  },
+  "files.watcherExclude": {
+    "**/.git/*/**": true,
+    "**/.tmp/*/**": true,
+    "**/.venv/*/**": true
+  },
+  "mypy-type-checker.importStrategy": "fromEnvironment",
+  "python.testing.pytestEnabled": true
+}

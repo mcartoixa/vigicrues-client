@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "charliermarsh.ruff",
+    "EditorConfig.EditorConfig",
+    "ms-python.mypy-type-checker",
+    "ms-python.python"
+  ],
+  "unwantedRecommendations": []
+}
