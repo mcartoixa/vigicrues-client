@@ -1,0 +1,89 @@
+{
+    "CdStationHydro": "E541000401",
+    "LbStationHydro": "Beutin",
+    "LbCoursEau": "Canche",
+    "CdStationHydroAncienRef": "0",
+    "CoordStationHydro": {
+        "CoordXStationHydro": "609318",
+        "CoordYStationHydro": "7044372"
+    },
+    "CdCommune": "62124",
+    "Evenement": [],
+    "VigilanceCrues": {
+        "StationPrevision": false,
+        "Photo": "f",
+        "ZoomInitial": "3",
+        "PereBoitEntVigiCru": {
+            "CdEntVigiCru": "29",
+            "Link": "services/bulletin.json?CdEntVigiCru=29"
+        },
+        "CruesHistoriques": [
+            {
+                "LbUsuel": "Crue de janvier 2018",
+                "ValHauteur": 2.92,
+                "ValDebit": 0
+            },
+            {
+                "LbUsuel": "Crue de novembre 2023",
+                "ValHauteur": 2.8,
+                "ValDebit": 0
+            },
+            {
+                "LbUsuel": "Crue de février 2016",
+                "ValHauteur": 2.73,
+                "ValDebit": 0
+            }
+        ],
+        "StationsBassin": [
+            {
+                "CdStationHydro": "E540031001",
+                "LbStationHydro": "Brimeux",
+                "LbCoursEau": "Canche",
+                "idspc": "29",
+                "Link": "services/station.json?CdStationHydro=E540031001"
+            },
+            {
+                "CdStationHydro": "E541000501",
+                "LbStationHydro": "Etaples",
+                "LbCoursEau": "Canche",
+                "idspc": "29",
+                "Link": "services/station.json?CdStationHydro=E541000501"
+            },
+            {
+                "CdStationHydro": "E540651601",
+                "LbStationHydro": "Ligny-sur-Canche",
+                "LbCoursEau": "Canche",
+                "idspc": "29",
+                "Link": "services/station.json?CdStationHydro=E540651601"
+            },
+            {
+                "CdStationHydro": "E541000101",
+                "LbStationHydro": "Estrée",
+                "LbCoursEau": "Course",
+                "idspc": "29",
+                "Link": "services/station.json?CdStationHydro=E541000101"
+            },
+            {
+                "CdStationHydro": "E540651001",
+                "LbStationHydro": "Hesdin",
+                "LbCoursEau": "Ternoise",
+                "idspc": "29",
+                "Link": "services/station.json?CdStationHydro=E540651001"
+            },
+            {
+                "CdStationHydro": "E540651901",
+                "LbStationHydro": "Teneur",
+                "LbCoursEau": "Ternoise",
+                "idspc": "29",
+                "Link": "services/station.json?CdStationHydro=E540651901"
+            }
+        ],
+        "FluxDonnees": {
+            "Observations": {
+                "Hauteurs": "services/observations.json/index.php?CdStationHydro=E541000401\u0026FormatDate=iso",
+                "Debits": "services/observations.json/index.php?CdStationHydro=E541000401\u0026FormatDate=iso\u0026GrdSerie=Q"
+            }
+        }
+    },
+    "VersionFlux": "Beta 0.3k"
+}

@@ -1,0 +1,57 @@
+{
+    "Scenario": {
+        "Flux": {
+            "Version": "1",
+            "DateRevision": "2019-07-02T15:00:00"
+        },
+        "CodeScenario": "VIC",
+        "VersionScenario": "1.1",
+        "NomScenario": "Référentiels et données de la vigilance crues métropolitaine",
+        "DateHeureCreationFichier": "2026-11-21T19:11:10+00:00",
+        "Emetteur": "1524"
+    },
+    "ListEntVigiCru": [
+        {
+            "CdEntVigiCru": "E540031001",
+            "TypEntVigiCru": "7",
+            "LbEntVigiCru": "Brimeux",
+            "CdDistrictEntVigiCru_1": "A renseigner obligatoirement",
+            "DtHrCreatEntVigiCru": "A renseigner obligatoirement",
+            "DtHrMajEntVigiCru": "A renseigner obligatoirement",
+            "StEntVigiCru": "Validé",
+            "CdTCC": "A renseigner obligatoirement",
+            "CdInt": "A renseigner obligatoirement",
+            "CdStationHydro": "E540031001",
+            "CdStationHydroAncienRef": "0",
+            "LbStationHydro": "Brimeux",
+            "TypStationHydro": "A renseigner obligatoirement",
+            "CdCommune": "62177",
+            "CdZoneHydro": "A renseigner obligatoirement",
+            "NomEntiteHydrographique": "Canche",
+            "CoordXStationHydro": "616837",
+            "CoordYStationHydro": "7039572",
+            "ProjCoordStationHydro": "A renseigner obligatoirement",
+            "aNPlusUn": {
+                "CdEntVigiCruSuperieur": "A renseigner",
+                "TypEntVigiCruSuperieur": "8",
+                "aNPlusUn": {
+                    "CdEntVigiCruSuperieur": "A renseigner",
+                    "TypEntVigiCruSuperieur": "5"
+                }
+            },
+            "VigilanceCrues": {
+                "StationPrevision": "t",
+                "FluxDonnees": {
+                    "Observations": {
+                        "Hauteurs": "https://www.vigicrues.gouv.fr/services/observations.json?CdStationHydro=E540031001\u0026FormatDate=iso",
+                        "Debits": "https://www.vigicrues.gouv.fr/services/observations.json?CdStationHydro=E540031001\u0026FormatDate=iso\u0026GrdSerie=Q"
+                    },
+                    "Previsions": {
+                        "Hauteurs": "https://www.vigicrues.gouv.fr/services/v1.1/prevision.json?CdEntVigiCru=E540031001\u0026TypEntVigiCru=7\u0026FormatDate=iso",
+                        "Debits": "https://www.vigicrues.gouv.fr/services/v1.1/prevision.json?CdEntVigiCru=E540031001\u0026TypEntVigiCru=7\u0026FormatDate=iso\u0026GrdSimul=Q"
+                    }
+                }
+            }
+        }
+    ]
+}

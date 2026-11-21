@@ -1,11 +1,6 @@
-from collections.abc import AsyncIterator, Awaitable, Callable
-from contextlib import AsyncExitStack
-from pathlib import Path
-
 import aiohttp
 import pytest
-from aiohttp import web
-from aiohttp.test_utils import TestServer, unused_port
+from aiohttp.test_utils import unused_port
 
 from vigicrues_client import (
     VigicruesApiError,
@@ -15,41 +10,11 @@ from vigicrues_client import (
     VigicruesResponseError,
 )
 
-RESPONSES_PATH = Path(__file__).parent / "responses"
-
-# Statuses and content types as recorded: see responses/README.md
-JSON_UTF8 = "application/json;charset=UTF-8"
-
-Serve = Callable[[int, str, bytes], Awaitable[VigicruesClient]]
-
-
-def _recorded(file: str) -> bytes:
-    return (RESPONSES_PATH / file).read_bytes()
-
-
-@pytest.fixture
-async def serve() -> AsyncIterator[Serve]:
-    """Start a server answering `/data` with the given response, and a client to it."""
-    async with AsyncExitStack() as stack:
-
-        async def start(status: int, content_type: str, body: bytes) -> VigicruesClient:
-            async def handler(request: web.Request) -> web.Response:
-                return web.Response(
-                    status=status, body=body, headers={"Content-Type": content_type}
-                )
-
-            app = web.Application()
-            app.router.add_get("/data", handler)
-            server = await stack.enter_async_context(TestServer(app))
-            return await stack.enter_async_context(
-                VigicruesClient(base_url=str(server.make_url("/")))
-            )
-
-        yield start
+from .support import JSON_UTF8, Serve, recorded
 
 
 async def test_get_json_returns_data(serve: Serve) -> None:
-    client = await serve(200, JSON_UTF8, _recorded("TronEntVigiCru_AP16.json"))
+    client, _ = await serve(200, JSON_UTF8, recorded("TronEntVigiCru_AP16.json"))
 
     data = await client._get_json("data")
 
@@ -58,7 +23,7 @@ async def test_get_json_returns_data(serve: Serve) -> None:
 
 
 async def test_get_json_returns_empty_list(serve: Serve) -> None:
-    client = await serve(200, JSON_UTF8, b"[]")
+    client, _ = await serve(200, JSON_UTF8, b"[]")
 
     assert await client._get_json("data") == []
 
@@ -99,7 +64,7 @@ async def test_get_json_returns_empty_list(serve: Serve) -> None:
 async def test_get_json_raises_errors_reported_with_http_200(
     serve: Serve, file: str, content_type: str, message: str, code: int | None
 ) -> None:
-    client = await serve(200, content_type, _recorded(file))
+    client, _ = await serve(200, content_type, recorded(file))
 
     with pytest.raises(VigicruesApiError) as error_info:
         await client._get_json("data")
@@ -137,21 +102,21 @@ async def test_get_json_raises_errors_reported_with_http_200(
 async def test_get_json_raises_on_unexpected_responses(
     serve: Serve, status: int, file: str, content_type: str, match: str
 ) -> None:
-    client = await serve(status, content_type, _recorded(file))
+    client, _ = await serve(status, content_type, recorded(file))
 
     with pytest.raises(VigicruesResponseError, match=match):
         await client._get_json("data")
 
 
 async def test_get_json_raises_on_invalid_json(serve: Serve) -> None:
-    client = await serve(200, JSON_UTF8, _recorded("TronEntVigiCru_AP16.json")[:100])
+    client, _ = await serve(200, JSON_UTF8, recorded("TronEntVigiCru_AP16.json")[:100])
 
     with pytest.raises(VigicruesResponseError, match="Invalid JSON"):
         await client._get_json("data")
 
 
 async def test_get_json_raises_on_too_many_requests(serve: Serve) -> None:
-    client = await serve(429, "text/html", b"")
+    client, _ = await serve(429, "text/html", b"")
 
     with pytest.raises(VigicruesRateLimitError):
         await client._get_json("data")

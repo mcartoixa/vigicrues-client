@@ -12,9 +12,14 @@ import aiohttp
 from ._errors import (
     VigicruesApiError,
     VigicruesConnectionError,
+    VigicruesError,
+    VigicruesNotFoundError,
     VigicruesRateLimitError,
     VigicruesResponseError,
 )
+from ._models import EntityType, ObservationSeries, Quantity, Station
+from ._observations import parse_observation_series
+from ._stations import parse_station
 
 DEFAULT_BASE_URL = "https://www.vigicrues.gouv.fr"
 DEFAULT_TIMEOUT = 30.0
@@ -70,6 +75,90 @@ class VigicruesClient:
         if self._owns_session and self._session is not None:
             await self._session.close()
             self._session = None
+
+    async def get_observations(
+        self, station: str, quantity: Quantity = Quantity.HEIGHT
+    ) -> ObservationSeries:
+        """Get the recent values observed at a station.
+
+        The service keeps about one month of heights, and several months of flow
+        rates.
+
+        Args:
+            station: Code of the hydrometric station, e.g. `"O262002001"`.
+            quantity: Observed quantity: heights in metres, or flow rates in cubic
+                metres per second.
+
+        Returns:
+            The values, from the oldest to the latest. The series is empty if the
+            station does not measure the quantity.
+
+        Raises:
+            VigicruesNotFoundError: The service does not know the station.
+            VigicruesError: The observations could not be retrieved.
+        """
+        try:
+            data = await self._get_json(
+                "services/observations.json",
+                {
+                    "CdStationHydro": station,
+                    "GrdSerie": quantity.value,
+                    "FormatDate": "iso",
+                },
+            )
+        except VigicruesApiError as error:
+            # The only other cause is an invalid GrdSerie, which the client never sends.
+            if error.code == HTTPStatus.BAD_REQUEST:
+                raise VigicruesNotFoundError(error.message, error.code) from error
+            raise
+        series = parse_observation_series(data)
+        if series.quantity is not quantity:
+            raise VigicruesResponseError(
+                f"Expected {quantity.name} observations, got {series.quantity.name}"
+            )
+        return series
+
+    async def get_station(self, station: str) -> Station:
+        """Get the details of a station.
+
+        Args:
+            station: Code of the hydrometric station, e.g. `"E540031001"`.
+
+        Raises:
+            VigicruesNotFoundError: The service does not know the station.
+            VigicruesError: The details could not be retrieved.
+        """
+        try:
+            data = await self._get_json(
+                "services/station.json", {"CdStationHydro": station}
+            )
+        except VigicruesResponseError as error:
+            # The service answers an unknown station with the same HTTP 500 page as
+            # an outage: the referential tells them apart.
+            unknown_station_error = await self._get_unknown_station_error(station)
+            if unknown_station_error is None:
+                raise
+            raise VigicruesNotFoundError(
+                unknown_station_error.message, unknown_station_error.code
+            ) from error
+        return parse_station(data)
+
+    async def _get_unknown_station_error(
+        self, station: str
+    ) -> VigicruesApiError | None:
+        """Return the referential's error if it does not know the station."""
+        try:
+            await self._get_json(
+                "services/v1.1/StaEntVigiCru.json",
+                {"CdEntVigiCru": station, "TypEntVigiCru": EntityType.STATION.value},
+            )
+        except VigicruesApiError as error:
+            # The only other cause is an invalid TypEntVigiCru, which the client
+            # never sends.
+            return error if error.code == HTTPStatus.BAD_REQUEST else None
+        except VigicruesError:
+            return None
+        return None
 
     async def _get_json(
         self, path: str, params: Mapping[str, str] | None = None

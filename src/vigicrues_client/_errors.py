@@ -32,3 +32,7 @@ class VigicruesApiError(VigicruesError):
         super().__init__(message if code is None else f"{message} (code {code})")
         self.message = message
         self.code = code
+
+
+class VigicruesNotFoundError(VigicruesApiError):
+    """The Vigicrues service does not know the requested entity, e.g. a station."""

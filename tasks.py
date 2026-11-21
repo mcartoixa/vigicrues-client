@@ -61,8 +61,8 @@ def _run(c: Context, command: str, env: dict[str, str] | None = None) -> None:
     )
 
 
-def _is_verbose(c: Context) -> bool:
-    return bool(c.config.get("verbose", False))
+def _pytest_verbosity(c: Context) -> str:
+    return " -v" if c.config.get("verbose", False) else ""
 
 
 @task
@@ -95,16 +95,22 @@ def test(c: Context) -> None:
     cobertura_results_path = BUILD_OUTPUT_PATH / f"{PROJECT_NAME}-cobertura-results.xml"
     html_results_path = BUILD_OUTPUT_PATH / f"{PROJECT_NAME}-cobertura-results"
     BUILD_TEST_INTERMEDIATE_OUTPUT_PATH.mkdir(parents=True, exist_ok=True)
-    verbosity = " -v" if _is_verbose(c) else ""
     _run(
         c,
-        f'pytest{verbosity} --junitxml="{junit_results_path}" --cov --cov-report=term'
+        f'pytest{_pytest_verbosity(c)} --junitxml="{junit_results_path}"'
+        " --cov --cov-report=term"
         f' --cov-report=xml:"{cobertura_results_path}"'
         f' --cov-report=html:"{html_results_path}"',
         env={"COVERAGE_FILE": str(BUILD_TEST_INTERMEDIATE_OUTPUT_PATH / ".coverage")},
     )
     line_rate = ElementTree.parse(cobertura_results_path).getroot().get("line-rate")
     _echo(f"Line coverage: {line_rate}")
+
+
+@task
+def test_live(c: Context) -> None:
+    """Run the tests that call the real Vigicrues service (marked `live`)."""
+    _run(c, f"pytest{_pytest_verbosity(c)} -m live")
 
 
 @task

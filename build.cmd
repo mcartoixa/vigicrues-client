@@ -14,7 +14,7 @@ GOTO ARGS
 
 :SHOW_USAGE
 ECHO.
-ECHO Usage: "build [clean | compile | test | analyze | package | build | rebuild | release] [/log] [/NoPause] [/?]"
+ECHO Usage: "build [clean | compile | test | test-live | analyze | package | build | rebuild | release] [/log] [/NoPause] [/?]"
 ECHO.
 ECHO.                /NoPause  - Does not pause after completion
 ECHO.                /log      - Creates an extensive log file
@@ -54,6 +54,7 @@ IF /I "%~1"=="clean"                SET _TARGET=clean& RMDIR /S /Q .venv 2>nul& 
 IF /I "%~1"=="analyze"              SET _TARGET=analyze& SHIFT & GOTO ARGS_PARSE
 IF /I "%~1"=="compile"              SET _TARGET=compile& SHIFT & GOTO ARGS_PARSE
 IF /I "%~1"=="test"                 SET _TARGET=test& SHIFT & GOTO ARGS_PARSE
+IF /I "%~1"=="test-live"            SET _TARGET=test-live& SHIFT & GOTO ARGS_PARSE
 IF /I "%~1"=="package"              SET _TARGET=package& SHIFT & GOTO ARGS_PARSE
 IF /I "%~1"=="build"                SET _TARGET=build& SHIFT & GOTO ARGS_PARSE
 IF /I "%~1"=="rebuild"              SET _TARGET=rebuild& SHIFT & GOTO ARGS_PARSE

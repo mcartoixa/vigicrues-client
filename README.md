@@ -15,11 +15,11 @@ environment (`.venv/`) and the dependencies; [Git](https://git-scm.com/).
 ### Build
 
 ```powershell
-build.cmd [clean | compile | test | analyze | package | build | rebuild | release] [/log] [/NoPause] [/?]
+build.cmd [clean | compile | test | test-live | analyze | package | build | rebuild | release] [/log] [/NoPause] [/?]
 ```
 
 ```bash
-./build.sh [analyze|build|clean|compile|package|rebuild|release|test] [--log] [--help]
+./build.sh [analyze|build|clean|compile|package|rebuild|release|test|test-live] [--log] [--help]
 ```
 
 | Target | Content |
@@ -27,6 +27,7 @@ build.cmd [clean | compile | test | analyze | package | build | rebuild | releas
 | `clean` | Removes the virtual environment (`.venv/`, recreated right away) and the build outputs (`tmp/`) |
 | `compile` | Formatting, lint and type checks |
 | `test` | `compile`, then the tests with coverage (JUnit, Cobertura and HTML reports in `tmp/`) |
+| `test-live` | The tests that call the real Vigicrues service (marked `live`, excluded from `test`); also run weekly and on demand by the `test-live` GitHub workflow |
 | `analyze` | Lines of code (`tmp/cloc-results.xml`) |
 | `package` | Wheel and source distribution in `tmp/out/bin/` |
 | `build` (default) | `compile`, `test` and `analyze` |

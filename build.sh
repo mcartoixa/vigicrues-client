@@ -11,7 +11,7 @@ usage() {
     cat <<EOF
 
 Usage: $0 [TARGET] [OPTION]
-    TARGET          analyze|build|clean|compile|package|rebuild|release|test
+    TARGET          analyze|build|clean|compile|package|rebuild|release|test|test-live
     OPTION
         --log       Creates an extensive build.log file
         --help      Shows this help
@@ -36,7 +36,7 @@ failed() {
 # Note: Currently, last one on the command line wins (ex: rebuild clean == clean)
 for i in "$@"; do
     case $1 in
-        analyze|build|compile|package|rebuild|release|test) _TARGET=$1 ;;
+        analyze|build|compile|package|rebuild|release|test|test-live) _TARGET=$1 ;;
         clean) _TARGET=clean; rm -rf .venv/ ;;
         -l|--log) _VERBOSE=verbose ;;
         --help) usage; exit 0 ;;

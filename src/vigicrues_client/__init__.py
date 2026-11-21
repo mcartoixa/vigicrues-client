@@ -5,17 +5,32 @@ from ._errors import (
     VigicruesApiError,
     VigicruesConnectionError,
     VigicruesError,
+    VigicruesNotFoundError,
     VigicruesRateLimitError,
     VigicruesResponseError,
 )
-from ._models import Quantity, VigilanceLevel
+from ._models import (
+    BasinStation,
+    HistoricalFlood,
+    Observation,
+    ObservationSeries,
+    Quantity,
+    Station,
+    VigilanceLevel,
+)
 
 __all__ = [
+    "BasinStation",
+    "HistoricalFlood",
+    "Observation",
+    "ObservationSeries",
     "Quantity",
+    "Station",
     "VigicruesApiError",
     "VigicruesClient",
     "VigicruesConnectionError",
     "VigicruesError",
+    "VigicruesNotFoundError",
     "VigicruesRateLimitError",
     "VigicruesResponseError",
     "VigilanceLevel",
