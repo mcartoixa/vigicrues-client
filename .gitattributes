@@ -5,3 +5,7 @@
 
 # Files read by POSIX tools (bash, git) must keep LF line endings, even in Windows working copies
 *.sh        text eol=lf
+
+# Recorded responses are kept byte for byte as received (the service uses CRLF line endings)
+tests/responses/*.html  -text
+tests/responses/*.json  -text

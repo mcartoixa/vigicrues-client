@@ -1,0 +1,14 @@
+{
+    "Scenario": {
+        "Flux": {
+            "Version": "1",
+            "DateRevision": "2019-07-02T10:00:00"
+        },
+        "CodeScenario": "VIC",
+        "VersionScenario": "1.1",
+        "NomScenario": "Référentiels et données de la vigilance crues métropolitaine",
+        "DateHeureCreationFichier": "2026-11-21T18:28:19+00:00",
+        "Emetteur": "1524"
+    },
+    "msg_error": "Problème d\u0027exécution du process"
+}

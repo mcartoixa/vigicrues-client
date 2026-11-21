@@ -25,7 +25,9 @@ classifiers = [
     "Typing :: Typed",
 ]
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "aiohttp>=3.9",
+]
 
 [project.urls]
 Repository = "https://github.com/mcartoixa/vigicrues-client"
