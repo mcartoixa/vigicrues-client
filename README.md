@@ -152,3 +152,30 @@ uv run pytest -m live
 # Tests on another Python version, in a temporary environment (.venv is left untouched)
 uv run --isolated --python 3.11 pytest
 ```
+
+### Release
+
+The version number is written in `pyproject.toml`; `main` keeps the last released one until the next
+release. Pushing a tag `v<version>` publishes that version on [PyPI](https://pypi.org/project/vigicrues-client/):
+the `build` workflow checks that the tag matches the version in `pyproject.toml`, builds and tests on
+every Python version, then uploads the packages built by that same run. Publication uses
+[Trusted Publishing](https://docs.pypi.org/trusted-publishers/): PyPI accepts uploads from the
+`build.yml` workflow in the `pypi` environment of this repository, no token is stored.
+
+A published version can never be uploaded again, even after its deletion: fix a bad release with a new
+version.
+
+```powershell
+# 1. Check the parsing of the live Vigicrues service, set the new version, then commit and push to
+#    main and wait for the build to pass
+build.cmd test-live
+uv version 0.3.0
+
+# 2. Tag the commit: the build of the tag publishes the version on PyPI
+git tag v0.3.0
+git push origin v0.3.0
+
+# 3. Once published, create the GitHub release with notes describing the changes (fails if the tag
+#    does not exist, rather than creating it)
+gh release create v0.3.0 --verify-tag --notes-file notes.md
+```
