@@ -1,6 +1,6 @@
 [project]
 name = "vigicrues-client"
-version = "0.2.0rc1"
+version = "0.2.0"
 description = "Asynchronous Python client for Vigicrues, the French flood vigilance service"
 readme = "README.md"
 license = "MIT"
