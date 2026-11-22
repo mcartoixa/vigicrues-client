@@ -5,7 +5,99 @@
 [![GitHub Actions](https://img.shields.io/github/actions/workflow/status/mcartoixa/vigicrues-client/build.yml?branch=main)](https://github.com/mcartoixa/vigicrues-client/actions/workflows/build.yml)
 [![Codecov](https://img.shields.io/codecov/c/gh/mcartoixa/vigicrues-client)](https://app.codecov.io/gh/mcartoixa/vigicrues-client)
 
-Python client for the Vigicrues API
+Asynchronous Python client for [Vigicrues](https://www.vigicrues.gouv.fr/), the French flood
+vigilance service: water heights and flow rates observed at the hydrometric stations, flood vigilance
+levels and bulletins of the river sections.
+
+This project is not affiliated with Vigicrues. It reads the services and pages of the Vigicrues web
+site, which are not documented as a public API: they may change without notice.
+
+## Installation
+
+Requires Python 3.11 or later.
+
+```powershell
+pip install vigicrues-client
+```
+
+## Usage
+
+```python
+import asyncio
+
+from vigicrues_client import Quantity, VigicruesClient, VigilanceLevel
+
+
+async def main() -> None:
+    async with VigicruesClient() as client:
+        # Water heights observed at a station, in metres
+        heights = await client.get_observations("O262002001")
+        if heights.latest is not None:
+            print(f"{heights.station_name}: {heights.latest.value} m")
+
+        # Flow rates, in cubic metres per second
+        flows = await client.get_observations("E540031001", Quantity.FLOW)
+        if flows.latest is not None:
+            print(f"{flows.station_name}: {flows.latest.value} m³/s")
+
+        # Flood vigilance of a river section: level and forecaster's comments
+        vigilance = await client.get_river_section_vigilance("MP18")
+        print(f"{vigilance.section.name}: {vigilance.level.name}")
+        for comment in vigilance.comments:
+            print(comment)
+        print(vigilance.bulletin.general_comment)
+
+        # Levels of all the river sections of metropolitan France at once
+        levels = await client.get_vigilance_levels()
+        in_vigilance = [
+            code
+            for code, level in levels.levels.items()
+            if level >= VigilanceLevel.YELLOW
+        ]
+        print(f"In vigilance at {levels.time}: {in_vigilance}")
+
+
+asyncio.run(main())
+```
+
+| Method | Returns |
+|---|---|
+| `get_observations(station, quantity)` | Recent heights or flow rates observed at a station |
+| `get_station(station)` | Details of a station: river, territory, historical floods, stations of the basin |
+| `get_territory(territory)` | A flood vigilance territory and its river sections |
+| `get_river_section(section)` | A river section, its territory and its stations |
+| `get_vigilance_levels()` | Vigilance levels of all the river sections of metropolitan France |
+| `get_vigilance_level(section)` | Vigilance level of a river section |
+| `get_territory_bulletin(territory)` | Vigilance bulletin of a territory: situation, comments, levels of the river sections |
+| `get_river_section_vigilance(section)` | Vigilance level and comments of a river section, with the bulletin of its territory |
+
+The bulletins are read from the HTML pages of the Vigicrues web site, and are the most likely to break
+when the site changes.
+
+### HTTP session
+
+By default, the client creates its own [aiohttp](https://docs.aiohttp.org/) session and closes it
+with the client. An application can pass its own session instead, which the client never closes:
+
+```python
+async with aiohttp.ClientSession() as session:
+    client = VigicruesClient(session)
+    series = await client.get_observations("O262002001")
+```
+
+### Errors
+
+All the errors derive from `VigicruesError`:
+
+| Error | Raised when |
+|---|---|
+| `VigicruesConnectionError` | The service could not be reached or did not answer in time (`timeout` argument of the client, in seconds) |
+| `VigicruesRateLimitError` | The service refused the request: too many requests (HTTP 429). Avoid bursts of requests |
+| `VigicruesBadValueError` | The service rejected a code: unknown or invalid (it does not tell them apart) |
+| `VigicruesUnknownValueError` | The service sent nothing for a code that it did not reject |
+| `VigicruesResponseError` | The service sent an unexpected response: HTTP error, unexpected content or page structure |
+| `VigicruesNotFoundError` | The service does not have the requested resource (HTTP 404); a `VigicruesResponseError` |
+| `VigicruesApiError` | The service reported another error in its response; base class of `VigicruesBadValueError` |
 
 ## Development
 
