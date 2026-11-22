@@ -36,7 +36,8 @@ class Served(NamedTuple):
 class Serve(Protocol):
     """Start a local server answering with the given response.
 
-    `routes` maps request paths (e.g. `"/services/station.json"`) to other responses.
+    `routes` maps request paths (e.g. `"/services/station.json"`), or paths with
+    their query string (preferred when both match), to other responses.
     """
 
     def __call__(

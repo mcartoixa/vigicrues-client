@@ -20,6 +20,10 @@ class VigicruesResponseError(VigicruesError):
     """
 
 
+class VigicruesNotFoundError(VigicruesResponseError):
+    """The Vigicrues service does not have the requested resource (HTTP 404)."""
+
+
 class VigicruesApiError(VigicruesError):
     """The Vigicrues service reported an error in its response.
 
@@ -34,5 +38,17 @@ class VigicruesApiError(VigicruesError):
         self.code = code
 
 
-class VigicruesNotFoundError(VigicruesApiError):
-    """The Vigicrues service does not know the requested entity, e.g. a station."""
+class VigicruesUnknownValueError(VigicruesError):
+    """The Vigicrues service sent nothing for a value of the request.
+
+    For instance a river section code that the service does not reject, but that
+    has no data in its response.
+    """
+
+
+class VigicruesBadValueError(VigicruesApiError):
+    """The Vigicrues service rejected a value of the request, e.g. a station code.
+
+    The value is unknown or invalid: the service does not tell them apart (it
+    reports both with code 400).
+    """

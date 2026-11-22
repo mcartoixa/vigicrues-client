@@ -2,24 +2,45 @@
 
 import importlib.metadata
 import json
-from collections.abc import Mapping
+from collections.abc import Awaitable, Mapping
 from http import HTTPStatus
 from types import TracebackType
-from typing import Any, Self
+from typing import Any, NamedTuple, Self
 
 import aiohttp
 
+from ._bulletins import parse_territory_bulletin
 from ._errors import (
     VigicruesApiError,
+    VigicruesBadValueError,
     VigicruesConnectionError,
     VigicruesError,
     VigicruesNotFoundError,
     VigicruesRateLimitError,
     VigicruesResponseError,
+    VigicruesUnknownValueError,
 )
-from ._models import EntityType, ObservationSeries, Quantity, Station
+from ._models import (
+    EntityType,
+    ObservationSeries,
+    Quantity,
+    RiverSection,
+    RiverSectionVigilance,
+    Station,
+    Territory,
+    TerritoryBulletin,
+    VigilanceLevel,
+    VigilanceLevels,
+)
 from ._observations import parse_observation_series
+from ._referential import (
+    find_entity,
+    get_entities,
+    parse_river_section,
+    parse_territory,
+)
 from ._stations import parse_station
+from ._vigilance import parse_vigilance_levels
 
 DEFAULT_BASE_URL = "https://www.vigicrues.gouv.fr"
 DEFAULT_TIMEOUT = 30.0
@@ -28,6 +49,14 @@ _USER_AGENT = (
     f"vigicrues-client/{importlib.metadata.version('vigicrues-client')}"
     " (+https://github.com/mcartoixa/vigicrues-client)"
 )
+
+
+class _Content(NamedTuple):
+    """Content of a successful response."""
+
+    type: str
+    charset: str | None
+    body: bytes
 
 
 class VigicruesClient:
@@ -94,23 +123,18 @@ class VigicruesClient:
             station does not measure the quantity.
 
         Raises:
-            VigicruesNotFoundError: The service does not know the station.
+            VigicruesBadValueError: The service rejected the station code: unknown
+                or invalid.
             VigicruesError: The observations could not be retrieved.
         """
-        try:
-            data = await self._get_json(
-                "services/observations.json",
-                {
-                    "CdStationHydro": station,
-                    "GrdSerie": quantity.value,
-                    "FormatDate": "iso",
-                },
-            )
-        except VigicruesApiError as error:
-            # The only other cause is an invalid GrdSerie, which the client never sends.
-            if error.code == HTTPStatus.BAD_REQUEST:
-                raise VigicruesNotFoundError(error.message, error.code) from error
-            raise
+        data = await self._get_json(
+            "services/observations.json",
+            {
+                "CdStationHydro": station,
+                "GrdSerie": quantity.value,
+                "FormatDate": "iso",
+            },
+        )
         series = parse_observation_series(data)
         if series.quantity is not quantity:
             raise VigicruesResponseError(
@@ -125,7 +149,8 @@ class VigicruesClient:
             station: Code of the hydrometric station, e.g. `"E540031001"`.
 
         Raises:
-            VigicruesNotFoundError: The service does not know the station.
+            VigicruesBadValueError: The service rejected the station code: unknown
+                or invalid.
             VigicruesError: The details could not be retrieved.
         """
         try:
@@ -135,61 +160,238 @@ class VigicruesClient:
         except VigicruesResponseError as error:
             # The service answers an unknown station with the same HTTP 500 page as
             # an outage: the referential tells them apart.
-            unknown_station_error = await self._get_unknown_station_error(station)
-            if unknown_station_error is None:
+            rejection_error = await self._get_rejection_error(
+                self._get_referential("StaEntVigiCru.json", station, EntityType.STATION)
+            )
+            if rejection_error is None:
                 raise
-            raise VigicruesNotFoundError(
-                unknown_station_error.message, unknown_station_error.code
-            ) from error
+            raise rejection_error from error
         return parse_station(data)
 
-    async def _get_unknown_station_error(
-        self, station: str
-    ) -> VigicruesApiError | None:
-        """Return the referential's error if it does not know the station."""
-        try:
-            await self._get_json(
-                "services/v1.1/StaEntVigiCru.json",
-                {"CdEntVigiCru": station, "TypEntVigiCru": EntityType.STATION.value},
+    async def get_territory(self, territory: str) -> Territory:
+        """Get a flood vigilance territory and its river sections.
+
+        Args:
+            territory: Code of the territory, e.g. `"25"`.
+
+        Raises:
+            VigicruesBadValueError: The service rejected the territory code: unknown
+                or invalid.
+            VigicruesUnknownValueError: The service sent no such territory.
+            VigicruesError: The territory could not be retrieved.
+        """
+        entities = await self._get_referential(
+            "TerEntVigiCru.json", territory, EntityType.TERRITORY
+        )
+        # The service answers some unknown codes (e.g. "0") with all the territories.
+        entity = find_entity(entities, territory)
+        if entity is None:
+            raise VigicruesUnknownValueError(f"Unknown territory {territory!r}")
+        return parse_territory(entity)
+
+    async def get_river_section(self, section: str) -> RiverSection:
+        """Get a river section, its territory and its stations.
+
+        Args:
+            section: Code of the river section, e.g. `"AP16"`.
+
+        Raises:
+            VigicruesBadValueError: The service rejected the river section code:
+                unknown or invalid.
+            VigicruesUnknownValueError: The service sent no such river section.
+            VigicruesError: The river section could not be retrieved.
+        """
+        entities = await self._get_referential(
+            "TronEntVigiCru.json", section, EntityType.RIVER_SECTION
+        )
+        entity = find_entity(entities, section)
+        if entity is None and entities:
+            # The service matches the code as a substring, and may send another
+            # section even if the requested one exists ("MP1" gets "MP10"): look
+            # for it among the river sections of the territory of the one sent.
+            territory = parse_river_section(entities[0]).territory_code
+            if territory is not None:
+                entity = find_entity(
+                    await self._get_referential(
+                        "TronEntVigiCru.json", territory, EntityType.TERRITORY
+                    ),
+                    section,
+                )
+        if entity is None:
+            raise VigicruesUnknownValueError(f"Unknown river section {section!r}")
+        return parse_river_section(entity)
+
+    async def get_vigilance_levels(self) -> VigilanceLevels:
+        """Get the current flood vigilance levels of all the river sections.
+
+        The service only sends them all at once, with their geometries (about
+        2 MB), and only for metropolitan France: prefer this method to
+        `get_vigilance_level` to follow several river sections.
+
+        Raises:
+            VigicruesError: The levels could not be retrieved.
+        """
+        return parse_vigilance_levels(
+            await self._get_json("services/1/InfoVigiCru.geojson")
+        )
+
+    async def get_vigilance_level(self, section: str) -> VigilanceLevel:
+        """Get the current flood vigilance level of a river section.
+
+        Args:
+            section: Code of the river section, e.g. `"AP16"`.
+
+        Raises:
+            VigicruesUnknownValueError: The service sent no level for the river
+                section: unknown, or outside metropolitan France (e.g. `"GU1"`).
+            VigicruesError: The level could not be retrieved.
+        """
+        level = (await self.get_vigilance_levels()).levels.get(section)
+        if level is None:
+            raise VigicruesUnknownValueError(
+                f"No vigilance level for river section {section!r}"
             )
-        except VigicruesApiError as error:
-            # The only other cause is an invalid TypEntVigiCru, which the client
-            # never sends.
-            return error if error.code == HTTPStatus.BAD_REQUEST else None
+        return level
+
+    async def get_territory_bulletin(self, territory: str) -> TerritoryBulletin:
+        """Get the flood vigilance bulletin of a territory.
+
+        The bulletin is read from the page of the territory on the Vigicrues web
+        site: it may change without notice.
+
+        Args:
+            territory: Code of the territory, e.g. `"29"`.
+
+        Raises:
+            VigicruesBadValueError: The service rejected the territory code: unknown
+                or invalid.
+            VigicruesUnknownValueError: The service sent no such territory.
+            VigicruesResponseError: The page does not have the expected structure.
+            VigicruesError: The bulletin could not be retrieved.
+        """
+        try:
+            body, encoding = await self._get_html(f"bulletin_local/{territory}")
+        except VigicruesResponseError as error:
+            # The service answers an unknown territory with the same HTTP 500 page as
+            # an outage: the referential tells them apart.
+            rejection_error = await self._get_rejection_error(
+                self.get_territory(territory)
+            )
+            if rejection_error is None:
+                raise
+            raise rejection_error from error
+        return parse_territory_bulletin(territory, body, encoding)
+
+    async def get_river_section_vigilance(self, section: str) -> RiverSectionVigilance:
+        """Get the current flood vigilance of a river section: level and texts.
+
+        Reads the bulletin of the territory of the river section, like
+        `get_territory_bulletin`: it may change without notice.
+
+        Args:
+            section: Code of the river section, e.g. `"MP18"`.
+
+        Raises:
+            VigicruesBadValueError: The service rejected a code: unknown or invalid.
+            VigicruesUnknownValueError: The service sent no such river section.
+            VigicruesResponseError: The service sent no territory for the river
+                section, or its bulletin does not have the expected structure or
+                does not list it.
+            VigicruesError: The vigilance could not be retrieved.
+        """
+        river_section = await self.get_river_section(section)
+        if river_section.territory_code is None:
+            raise VigicruesResponseError(f"No territory for river section {section!r}")
+        bulletin = await self.get_territory_bulletin(river_section.territory_code)
+        if not bulletin.river_sections:
+            # Only listed when one river section of the territory is in vigilance.
+            return RiverSectionVigilance(
+                river_section, VigilanceLevel.GREEN, (), bulletin
+            )
+        bulletin_section = next(
+            (s for s in bulletin.river_sections if s.code == section), None
+        )
+        if bulletin_section is None:
+            raise VigicruesResponseError(
+                f"River section {section!r} not in the bulletin of territory"
+                f" {river_section.territory_code!r}"
+            )
+        return RiverSectionVigilance(
+            river_section, bulletin_section.level, bulletin_section.comments, bulletin
+        )
+
+    async def _get_rejection_error(
+        self, lookup: Awaitable[object]
+    ) -> VigicruesBadValueError | VigicruesUnknownValueError | None:
+        """Return the error of a referential lookup if it rejects the code."""
+        try:
+            await lookup
+        except (VigicruesBadValueError, VigicruesUnknownValueError) as error:
+            return error
+        except VigicruesRateLimitError:
+            # The caller must slow down, whatever the original error.
+            raise
         except VigicruesError:
             return None
         return None
 
+    async def _get_referential(
+        self, file: str, code: str, entity_type: EntityType
+    ) -> list[dict[str, object]]:
+        """Return the entities sent by the v1.1 referential for a code.
+
+        The entities may not have the requested code: the service matches some
+        codes loosely.
+        """
+        data = await self._get_json(
+            f"services/v1.1/{file}",
+            {"CdEntVigiCru": code, "TypEntVigiCru": entity_type.value},
+        )
+        return get_entities(data)
+
     async def _get_json(
         self, path: str, params: Mapping[str, str] | None = None
     ) -> object:
-        content_type, body = await self._get(path, params)
-        if content_type != "application/json":
+        content = await self._get(path, params)
+        if content.type != "application/json":
             raise VigicruesResponseError(
-                f"Unexpected content type {content_type!r} for {path}"
+                f"Unexpected content type {content.type!r} for {path}"
             )
         try:
-            data: object = json.loads(body)
+            data: object = json.loads(content.body)
         except ValueError as error:
             raise VigicruesResponseError(f"Invalid JSON for {path}") from error
         _raise_for_api_error(data)
         return data
 
+    async def _get_html(self, path: str) -> tuple[bytes, str | None]:
+        """Return the body of an HTML page and its encoding, if the response sets it."""
+        content = await self._get(path)
+        if content.type != "text/html":
+            raise VigicruesResponseError(
+                f"Unexpected content type {content.type!r} for {path}"
+            )
+        return content.body, content.charset
+
     async def _get(
         self, path: str, params: Mapping[str, str] | None = None
-    ) -> tuple[str, bytes]:
-        """Return the content type and the body of a successful response."""
+    ) -> _Content:
+        """Return the content of a successful response."""
         try:
             async with self._get_session().get(
                 f"{self._base_url}/{path}", params=params, timeout=self._timeout
             ) as response:
                 if response.status == HTTPStatus.TOO_MANY_REQUESTS:
                     raise VigicruesRateLimitError(f"Too many requests for {path}")
+                if response.status == HTTPStatus.NOT_FOUND:
+                    raise VigicruesNotFoundError(f"HTTP status 404 for {path}")
                 if not response.ok:
                     raise VigicruesResponseError(
                         f"HTTP status {response.status} for {path}"
                     )
-                return response.content_type, await response.read()
+                return _Content(
+                    response.content_type, response.charset, await response.read()
+                )
         except (aiohttp.ClientError, TimeoutError) as error:
             raise VigicruesConnectionError(f"Could not get {path}") from error
 
@@ -208,6 +410,8 @@ def _raise_for_api_error(data: object) -> None:
     - `{"error_msg": ..., "code": 400}`
     - `{"Scenario": {...}, "msg_error": ...}`
     - `{"Simul": {...}, "message": ..., "code": 204}`
+
+    Code 400 means that a value of the request is unknown or invalid.
     """
     error: dict[Any, Any]
     if isinstance(data, list) and data and isinstance(data[0], dict):
@@ -219,8 +423,13 @@ def _raise_for_api_error(data: object) -> None:
     code = error.get("code")
     code = code if isinstance(code, int) else None
     if "error_msg" in error:
-        raise VigicruesApiError(str(error["error_msg"]), code)
-    if "msg_error" in error:
-        raise VigicruesApiError(str(error["msg_error"]), code)
-    if "message" in error and code is not None:
-        raise VigicruesApiError(str(error["message"]), code)
+        message = error["error_msg"]
+    elif "msg_error" in error:
+        message = error["msg_error"]
+    elif "message" in error and code is not None:
+        message = error["message"]
+    else:
+        return
+    if code == HTTPStatus.BAD_REQUEST:
+        raise VigicruesBadValueError(str(message), code)
+    raise VigicruesApiError(str(message), code)

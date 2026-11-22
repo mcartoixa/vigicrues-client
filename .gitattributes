@@ -7,5 +7,6 @@
 *.sh        text eol=lf
 
 # Recorded responses are kept byte for byte as received (the service uses CRLF line endings)
+tests/responses/*.geojson  -text
 tests/responses/*.html  -text
 tests/responses/*.json  -text

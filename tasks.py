@@ -81,14 +81,14 @@ def clean(c: Context) -> None:
 
 
 @task(name="compile")
-def compile_(c: Context) -> None:
+def do_compile(c: Context) -> None:
     """Check formatting, lint and types (static checks replace compilation)."""
     _run(c, "ruff format --check")
     _run(c, "ruff check")
     _run(c, "mypy")
 
 
-@task(pre=[compile_])
+@task(pre=[do_compile])
 def test(c: Context) -> None:
     """Run the tests with coverage: JUnit, Cobertura and HTML reports in tmp/."""
     junit_results_path = BUILD_OUTPUT_PATH / f"{PROJECT_NAME}-junit-results.xml"
@@ -137,7 +137,7 @@ def package(c: Context) -> None:
     )
 
 
-@task(pre=[compile_, test, analyze], default=True)
+@task(pre=[do_compile, test, analyze], default=True)
 def build(c: Context) -> None:
     """Compile, test and analyze."""
 

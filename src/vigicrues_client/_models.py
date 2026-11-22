@@ -1,5 +1,6 @@
 """Domain types of the Vigicrues service."""
 
+from collections.abc import Mapping
 from dataclasses import dataclass
 from datetime import datetime
 from enum import IntEnum, StrEnum
@@ -129,3 +130,150 @@ class Station:
     is_forecast_station: bool
     historical_floods: tuple[HistoricalFlood, ...]
     basin_stations: tuple[BasinStation, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class TerritoryRiverSection:
+    """River section of a flood vigilance territory.
+
+    Values the service does not have are `None`.
+
+    Attributes:
+        code: Code of the river section, e.g. `"MP18"`.
+        name: Name of the river section, e.g. `"Garonne toulousaine"`.
+    """
+
+    code: str | None
+    name: str | None
+
+
+@dataclass(frozen=True, slots=True)
+class Territory:
+    """Flood vigilance territory, monitored by one flood forecasting service.
+
+    Values the service does not have are `None`.
+
+    Attributes:
+        code: Code of the territory, e.g. `"25"`.
+        name: Name of the territory, e.g. `"Garonne-Tarn-Lot"`.
+        river_sections: River sections of the territory, in the order sent by the
+            service.
+    """
+
+    code: str
+    name: str | None
+    river_sections: tuple[TerritoryRiverSection, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class RiverSectionStation:
+    """Hydrometric station of a river section.
+
+    Values the service does not have are `None`.
+
+    Attributes:
+        code: Code of the hydrometric station, e.g. `"E540031001"`.
+        name: Name of the station, as sent by the service, e.g. `"Brimeux"`.
+    """
+
+    code: str | None
+    name: str | None
+
+
+@dataclass(frozen=True, slots=True)
+class RiverSection:
+    """River section, the unit that flood vigilance levels apply to.
+
+    Values the service does not have are `None`.
+
+    Attributes:
+        code: Code of the river section, e.g. `"AP16"`.
+        name: Name of the river section, e.g. `"Canche"`.
+        territory_code: Code of the flood vigilance territory, e.g. `"29"`.
+        stations: Stations of the river section, in the order sent by the service.
+    """
+
+    code: str
+    name: str | None
+    territory_code: str | None
+    stations: tuple[RiverSectionStation, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class VigilanceLevels:
+    """Current flood vigilance levels of the river sections of metropolitan France.
+
+    Attributes:
+        time: Production time of the levels, with the offset sent by the service
+            (UTC).
+        levels: Vigilance level of each river section, by river section code, e.g.
+            `"AP16"`.
+    """
+
+    time: datetime
+    levels: Mapping[str, VigilanceLevel]
+
+
+@dataclass(frozen=True, slots=True)
+class BulletinRiverSection:
+    """Vigilance of a river section, as described in the bulletin of its territory.
+
+    Attributes:
+        code: Code of the river section, e.g. `"AP16"`.
+        name: Name of the river section, e.g. `"Canche"`.
+        level: Vigilance level of the river section.
+        comments: Comments and forecasts, in French, one per paragraph, e.g.
+            `("Pas de vigilance particulière requise.",)`.
+    """
+
+    code: str
+    name: str
+    level: VigilanceLevel
+    comments: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class TerritoryBulletin:
+    """Flood vigilance bulletin of a territory.
+
+    Texts are in French, with their line breaks.
+
+    Attributes:
+        territory_code: Code of the territory, e.g. `"29"`.
+        publication_time: Publication time, in metropolitan France local time.
+        next_update_time: Time of the next publication at the latest, in
+            metropolitan France local time.
+        situation: Qualification of the situation, or `None` when no river section
+            of the territory is in vigilance.
+        general_comment: General comment on the situation, e.g.
+            `"Pas de vigilance particulière requise."`.
+        river_sections: River sections of the territory, in the order of the
+            bulletin. Empty when no river section of the territory is in
+            vigilance.
+    """
+
+    territory_code: str
+    publication_time: datetime
+    next_update_time: datetime
+    situation: str | None
+    general_comment: str
+    river_sections: tuple[BulletinRiverSection, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class RiverSectionVigilance:
+    """Current flood vigilance of a river section, from the bulletin of its territory.
+
+    Attributes:
+        section: The river section, with its territory and stations.
+        level: Vigilance level of the river section.
+        comments: Comments and forecasts on the river section, in French, one per
+            paragraph. Empty when no river section of the territory is in
+            vigilance: see the general comment of the bulletin.
+        bulletin: Bulletin of the territory: publication times, territory texts.
+    """
+
+    section: RiverSection
+    level: VigilanceLevel
+    comments: tuple[str, ...]
+    bulletin: TerritoryBulletin

@@ -2,6 +2,9 @@
 
 from ._errors import VigicruesResponseError
 
+# Sent by the referential in place of the values it does not have.
+_PLACEHOLDERS = frozenset({"A renseigner obligatoirement", "A renseigner"})
+
 
 def as_object(value: object, name: str) -> dict[str, object]:
     """Return `value` as a JSON object, `name` describing it in errors."""
@@ -33,11 +36,27 @@ def get_str(parent: dict[str, object], key: str) -> str:
     return value
 
 
+def get_optional_str(parent: dict[str, object], key: str) -> str | None:
+    """Return the JSON string `parent[key]`, or `None` for a placeholder value."""
+    value = get_str(parent, key)
+    return None if value in _PLACEHOLDERS else value
+
+
 def get_bool(parent: dict[str, object], key: str) -> bool:
     """Return the JSON boolean `parent[key]`."""
     value = parent.get(key)
     if not isinstance(value, bool):
         raise VigicruesResponseError(f"Expected a boolean for {key}, got {value!r:.80}")
+    return value
+
+
+def get_int(parent: dict[str, object], key: str) -> int:
+    """Return the JSON integer `parent[key]`."""
+    value = parent.get(key)
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise VigicruesResponseError(
+            f"Expected an integer for {key}, got {value!r:.80}"
+        )
     return value
 
 

@@ -4,8 +4,10 @@ from aiohttp.test_utils import unused_port
 
 from vigicrues_client import (
     VigicruesApiError,
+    VigicruesBadValueError,
     VigicruesClient,
     VigicruesConnectionError,
+    VigicruesNotFoundError,
     VigicruesRateLimitError,
     VigicruesResponseError,
 )
@@ -71,18 +73,24 @@ async def test_get_json_raises_errors_reported_with_http_200(
 
     assert error_info.value.message == message
     assert error_info.value.code == code
+    # Code 400: unknown or invalid value
+    assert type(error_info.value) is (
+        VigicruesBadValueError if code == 400 else VigicruesApiError
+    )
+
+
+async def test_get_json_raises_not_found_for_http_404(serve: Serve) -> None:
+    client, _ = await serve(
+        404, "text/html; charset=UTF-8", recorded("page_not_found.html")
+    )
+
+    with pytest.raises(VigicruesNotFoundError, match="HTTP status 404"):
+        await client._get_json("data")
 
 
 @pytest.mark.parametrize(
     ("status", "file", "content_type", "match"),
     [
-        pytest.param(
-            404,
-            "page_not_found.html",
-            "text/html; charset=UTF-8",
-            "HTTP status 404",
-            id="page not found",
-        ),
         pytest.param(
             500,
             "station_unknown.html",

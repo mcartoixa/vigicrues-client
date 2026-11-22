@@ -27,6 +27,8 @@ classifiers = [
 requires-python = ">=3.11"
 dependencies = [
     "aiohttp>=3.9",
+    "beautifulsoup4>=4.13.1",
+    "tzdata>=2025.2",
 ]
 
 [project.urls]
@@ -107,4 +109,7 @@ testpaths = ["tests"]
 
 [tool.coverage.run]
 branch = true
+# Relative to the current directory (the project root for the build, uv and IDEs). The build
+# sets the same location with COVERAGE_FILE, which takes precedence.
+data_file = "tmp/tst/.coverage"
 source_pkgs = ["vigicrues_client"]

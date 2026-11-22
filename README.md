@@ -15,7 +15,7 @@ environment (`.venv/`) and the dependencies; [Git](https://git-scm.com/).
 ### Build
 
 ```powershell
-build.cmd [clean | compile | test | test-live | analyze | package | build | rebuild | release] [/log] [/NoPause] [/?]
+build.cmd [analyze|build|clean|compile|package|rebuild|release|test|test-live] [/log] [/NoPause] [/?]
 ```
 
 ```bash

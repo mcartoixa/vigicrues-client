@@ -23,8 +23,8 @@ async def _get_echo(
     client: VigicruesClient, params: Mapping[str, str] | None = None
 ) -> tuple[str, str]:
     """Return the path with query string and the User-Agent received by the server."""
-    _, body = await client._get("echo", params)
-    path_qs, user_agent = body.decode().split("\n")
+    content = await client._get("echo", params)
+    path_qs, user_agent = content.body.decode().split("\n")
     return path_qs, user_agent
 
 

@@ -7,8 +7,8 @@ from vigicrues_client import (
     Observation,
     Quantity,
     VigicruesApiError,
+    VigicruesBadValueError,
     VigicruesClient,
-    VigicruesNotFoundError,
     VigicruesResponseError,
 )
 
@@ -102,17 +102,16 @@ async def test_get_observations_raises_on_other_quantity(serve: Serve) -> None:
         await client.get_observations("O262002001", Quantity.FLOW)
 
 
-async def test_get_observations_raises_not_found_for_unknown_station(
+async def test_get_observations_raises_bad_value_for_unknown_station(
     serve: Serve,
 ) -> None:
     client, _ = await serve(
         200, "application/json", recorded("observations_unknown.json")
     )
 
-    with pytest.raises(VigicruesNotFoundError) as error_info:
+    with pytest.raises(VigicruesBadValueError) as error_info:
         await client.get_observations("X000000000")
 
-    assert isinstance(error_info.value, VigicruesApiError)
     assert error_info.value.message == "Code de station inconnu"
 
 
@@ -125,7 +124,7 @@ async def test_get_observations_passes_other_api_errors_on(serve: Serve) -> None
     with pytest.raises(VigicruesApiError) as error_info:
         await client.get_observations("O262002001")
 
-    assert not isinstance(error_info.value, VigicruesNotFoundError)
+    assert not isinstance(error_info.value, VigicruesBadValueError)
     assert error_info.value.code == 500
 
 

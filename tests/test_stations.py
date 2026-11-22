@@ -3,8 +3,9 @@ import pytest
 from vigicrues_client import (
     BasinStation,
     HistoricalFlood,
+    VigicruesBadValueError,
     VigicruesClient,
-    VigicruesNotFoundError,
+    VigicruesRateLimitError,
     VigicruesResponseError,
 )
 
@@ -59,7 +60,7 @@ async def test_get_station_returns_station_without_forecasts(serve: Serve) -> No
     )
 
 
-async def test_get_station_raises_not_found_for_unknown_station(serve: Serve) -> None:
+async def test_get_station_raises_bad_value_for_unknown_station(serve: Serve) -> None:
     client, requests = await serve(
         *STATION_UNKNOWN,
         routes={
@@ -69,7 +70,7 @@ async def test_get_station_raises_not_found_for_unknown_station(serve: Serve) ->
         },
     )
 
-    with pytest.raises(VigicruesNotFoundError) as error_info:
+    with pytest.raises(VigicruesBadValueError) as error_info:
         await client.get_station("X000000000")
 
     assert error_info.value.message == "Code de station inconnu."
@@ -77,6 +78,31 @@ async def test_get_station_raises_not_found_for_unknown_station(serve: Serve) ->
         "/services/station.json?CdStationHydro=X000000000",
         f"{REFERENTIAL_PATH}?CdEntVigiCru=X000000000&TypEntVigiCru=7",
     ]
+
+
+async def test_get_station_raises_bad_value_for_invalid_code(serve: Serve) -> None:
+    client, requests = await serve(
+        200, "application/json", recorded("station_invalid.json")
+    )
+
+    with pytest.raises(VigicruesBadValueError) as error_info:
+        await client.get_station("E54003100")
+
+    assert error_info.value.message == "Paramètre CdStationHydro invalide"
+    assert requests == ["/services/station.json?CdStationHydro=E54003100"]
+
+
+async def test_get_station_raises_rate_limit_from_referential(serve: Serve) -> None:
+    client, _ = await serve(
+        *STATION_UNKNOWN, routes={REFERENTIAL_PATH: Response(429, "text/html", b"")}
+    )
+
+    with pytest.raises(VigicruesRateLimitError) as error_info:
+        await client.get_station("X000000000")
+
+    # The original error stays available
+    assert isinstance(error_info.value.__context__, VigicruesResponseError)
+    assert "HTTP status 500" in str(error_info.value.__context__)
 
 
 @pytest.mark.parametrize(
@@ -139,7 +165,7 @@ async def test_get_station_from_vigicrues() -> None:
 
 
 @pytest.mark.live
-async def test_get_station_raises_not_found_from_vigicrues() -> None:
+async def test_get_station_raises_bad_value_from_vigicrues() -> None:
     async with VigicruesClient() as client:
-        with pytest.raises(VigicruesNotFoundError):
+        with pytest.raises(VigicruesBadValueError):
             await client.get_station("X000000000")

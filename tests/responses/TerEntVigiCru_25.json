@@ -1,0 +1,173 @@
+{
+    "Scenario": {
+        "Flux": {
+            "Version": "1",
+            "DateRevision": "2019-07-02T11:00:00"
+        },
+        "CodeScenario": "VIC",
+        "VersionScenario": "1.1",
+        "NomScenario": "Référentiels et données de la vigilance crues métropolitaine",
+        "DateHeureCreationFichier": "2026-11-22T07:03:29+00:00",
+        "Emetteur": "1524"
+    },
+    "ListEntVigiCru": [
+        {
+            "CdEntVigiCru": "25",
+            "TypEntVigiCru": "5",
+            "LbEntVigiCru": "Garonne-Tarn-Lot",
+            "CdDistrictEntVigiCru_1": "A renseigner obligatoirement",
+            "CdDistrictEntVigiCru_2": "A renseigner obligatoirement",
+            "DtHrCreatEntVigiCru": "A renseigner obligatoirement",
+            "DtHrMajEntVigiCru": "A renseigner obligatoirement",
+            "StEntVigiCru": "Validé",
+            "CdTCC": "A renseigner obligatoirement",
+            "CdInt": "A renseigner obligatoirement",
+            "aNMoinsUn": [
+                {
+                    "CdEntVigiCruInferieur": "MP10",
+                    "TypEntVigiCruInferieur": "8",
+                    "LbEntVigiCruInferieur": "Garonne marmandaise",
+                    "Link": "https://www.vigicrues.gouv.fr/services/v1.1/TronEntVigiCru.json?CdEntVigiCru=MP10\u0026TypEntVigiCru=8"
+                },
+                {
+                    "CdEntVigiCruInferieur": "MP1",
+                    "TypEntVigiCruInferieur": "8",
+                    "LbEntVigiCruInferieur": "Ariège - Hers vif",
+                    "Link": "https://www.vigicrues.gouv.fr/services/v1.1/TronEntVigiCru.json?CdEntVigiCru=MP1\u0026TypEntVigiCru=8"
+                },
+                {
+                    "CdEntVigiCruInferieur": "TL4",
+                    "TypEntVigiCruInferieur": "8",
+                    "LbEntVigiCruInferieur": "Dourdou - Sorgues - Rance",
+                    "Link": "https://www.vigicrues.gouv.fr/services/v1.1/TronEntVigiCru.json?CdEntVigiCru=TL4\u0026TypEntVigiCru=8"
+                },
+                {
+                    "CdEntVigiCruInferieur": "MP11",
+                    "TypEntVigiCruInferieur": "8",
+                    "LbEntVigiCruInferieur": "Hers Mort",
+                    "Link": "https://www.vigicrues.gouv.fr/services/v1.1/TronEntVigiCru.json?CdEntVigiCru=MP11\u0026TypEntVigiCru=8"
+                },
+                {
+                    "CdEntVigiCruInferieur": "MP2",
+                    "TypEntVigiCruInferieur": "8",
+                    "LbEntVigiCruInferieur": "Ger - Salat",
+                    "Link": "https://www.vigicrues.gouv.fr/services/v1.1/TronEntVigiCru.json?CdEntVigiCru=MP2\u0026TypEntVigiCru=8"
+                },
+                {
+                    "CdEntVigiCruInferieur": "MP3",
+                    "TypEntVigiCruInferieur": "8",
+                    "LbEntVigiCruInferieur": "Arize - Lèze",
+                    "Link": "https://www.vigicrues.gouv.fr/services/v1.1/TronEntVigiCru.json?CdEntVigiCru=MP3\u0026TypEntVigiCru=8"
+                },
+                {
+                    "CdEntVigiCruInferieur": "MP4",
+                    "TypEntVigiCruInferieur": "8",
+                    "LbEntVigiCruInferieur": "Garonne amont - Nestes",
+                    "Link": "https://www.vigicrues.gouv.fr/services/v1.1/TronEntVigiCru.json?CdEntVigiCru=MP4\u0026TypEntVigiCru=8"
+                },
+                {
+                    "CdEntVigiCruInferieur": "MP7",
+                    "TypEntVigiCruInferieur": "8",
+                    "LbEntVigiCruInferieur": "Garonne agenaise",
+                    "Link": "https://www.vigicrues.gouv.fr/services/v1.1/TronEntVigiCru.json?CdEntVigiCru=MP7\u0026TypEntVigiCru=8"
+                },
+                {
+                    "CdEntVigiCruInferieur": "TL1",
+                    "TypEntVigiCruInferieur": "8",
+                    "LbEntVigiCruInferieur": "Agout - Thoré",
+                    "Link": "https://www.vigicrues.gouv.fr/services/v1.1/TronEntVigiCru.json?CdEntVigiCru=TL1\u0026TypEntVigiCru=8"
+                },
+                {
+                    "CdEntVigiCruInferieur": "TL10",
+                    "TypEntVigiCruInferieur": "8",
+                    "LbEntVigiCruInferieur": "Lot amont - Truyère",
+                    "Link": "https://www.vigicrues.gouv.fr/services/v1.1/TronEntVigiCru.json?CdEntVigiCru=TL10\u0026TypEntVigiCru=8"
+                },
+                {
+                    "CdEntVigiCruInferieur": "TL11",
+                    "TypEntVigiCruInferieur": "8",
+                    "LbEntVigiCruInferieur": "Lot moyen",
+                    "Link": "https://www.vigicrues.gouv.fr/services/v1.1/TronEntVigiCru.json?CdEntVigiCru=TL11\u0026TypEntVigiCru=8"
+                },
+                {
+                    "CdEntVigiCruInferieur": "TL12",
+                    "TypEntVigiCruInferieur": "8",
+                    "LbEntVigiCruInferieur": "Célé",
+                    "Link": "https://www.vigicrues.gouv.fr/services/v1.1/TronEntVigiCru.json?CdEntVigiCru=TL12\u0026TypEntVigiCru=8"
+                },
+                {
+                    "CdEntVigiCruInferieur": "TL13",
+                    "TypEntVigiCruInferieur": "8",
+                    "LbEntVigiCruInferieur": "Lot aval",
+                    "Link": "https://www.vigicrues.gouv.fr/services/v1.1/TronEntVigiCru.json?CdEntVigiCru=TL13\u0026TypEntVigiCru=8"
+                },
+                {
+                    "CdEntVigiCruInferieur": "TL3",
+                    "TypEntVigiCruInferieur": "8",
+                    "LbEntVigiCruInferieur": "Haut Tarn",
+                    "Link": "https://www.vigicrues.gouv.fr/services/v1.1/TronEntVigiCru.json?CdEntVigiCru=TL3\u0026TypEntVigiCru=8"
+                },
+                {
+                    "CdEntVigiCruInferieur": "TL5",
+                    "TypEntVigiCruInferieur": "8",
+                    "LbEntVigiCruInferieur": "Tarn moyen",
+                    "Link": "https://www.vigicrues.gouv.fr/services/v1.1/TronEntVigiCru.json?CdEntVigiCru=TL5\u0026TypEntVigiCru=8"
+                },
+                {
+                    "CdEntVigiCruInferieur": "TL9",
+                    "TypEntVigiCruInferieur": "8",
+                    "LbEntVigiCruInferieur": "Tarn aval",
+                    "Link": "https://www.vigicrues.gouv.fr/services/v1.1/TronEntVigiCru.json?CdEntVigiCru=TL9\u0026TypEntVigiCru=8"
+                },
+                {
+                    "CdEntVigiCruInferieur": "MP12",
+                    "TypEntVigiCruInferieur": "8",
+                    "LbEntVigiCruInferieur": "Gélise - Osse - Baïse",
+                    "Link": "https://www.vigicrues.gouv.fr/services/v1.1/TronEntVigiCru.json?CdEntVigiCru=MP12\u0026TypEntVigiCru=8"
+                },
+                {
+                    "CdEntVigiCruInferieur": "MP13",
+                    "TypEntVigiCruInferieur": "8",
+                    "LbEntVigiCruInferieur": "Gers - Arrats",
+                    "Link": "https://www.vigicrues.gouv.fr/services/v1.1/TronEntVigiCru.json?CdEntVigiCru=MP13\u0026TypEntVigiCru=8"
+                },
+                {
+                    "CdEntVigiCruInferieur": "MP14",
+                    "TypEntVigiCruInferieur": "8",
+                    "LbEntVigiCruInferieur": "Aveyron - Viaur",
+                    "Link": "https://www.vigicrues.gouv.fr/services/v1.1/TronEntVigiCru.json?CdEntVigiCru=MP14\u0026TypEntVigiCru=8"
+                },
+                {
+                    "CdEntVigiCruInferieur": "MP15",
+                    "TypEntVigiCruInferieur": "8",
+                    "LbEntVigiCruInferieur": "Aveyron aval",
+                    "Link": "https://www.vigicrues.gouv.fr/services/v1.1/TronEntVigiCru.json?CdEntVigiCru=MP15\u0026TypEntVigiCru=8"
+                },
+                {
+                    "CdEntVigiCruInferieur": "MP16",
+                    "TypEntVigiCruInferieur": "8",
+                    "LbEntVigiCruInferieur": "Gimone - Save",
+                    "Link": "https://www.vigicrues.gouv.fr/services/v1.1/TronEntVigiCru.json?CdEntVigiCru=MP16\u0026TypEntVigiCru=8"
+                },
+                {
+                    "CdEntVigiCruInferieur": "MP17",
+                    "TypEntVigiCruInferieur": "8",
+                    "LbEntVigiCruInferieur": "Touch",
+                    "Link": "https://www.vigicrues.gouv.fr/services/v1.1/TronEntVigiCru.json?CdEntVigiCru=MP17\u0026TypEntVigiCru=8"
+                },
+                {
+                    "CdEntVigiCruInferieur": "MP18",
+                    "TypEntVigiCruInferieur": "8",
+                    "LbEntVigiCruInferieur": "Garonne toulousaine",
+                    "Link": "https://www.vigicrues.gouv.fr/services/v1.1/TronEntVigiCru.json?CdEntVigiCru=MP18\u0026TypEntVigiCru=8"
+                },
+                {
+                    "CdEntVigiCruInferieur": "MP19",
+                    "TypEntVigiCruInferieur": "8",
+                    "LbEntVigiCruInferieur": "Garonne volvestre",
+                    "Link": "https://www.vigicrues.gouv.fr/services/v1.1/TronEntVigiCru.json?CdEntVigiCru=MP19\u0026TypEntVigiCru=8"
+                }
+            ]
+        }
+    ]
+}
