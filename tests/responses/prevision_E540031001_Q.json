@@ -1,0 +1,186 @@
+{
+    "Scenario": {
+        "Flux": {
+            "Version": "1beta",
+            "DateRevision": "2019-07-08T10:00:00"
+        },
+        "CodeScenario": "VIC",
+        "VersionScenario": "1.1",
+        "NomScenario": "Référentiels et données de la vigilance crues métropolitaine",
+        "DateHeureCreationFichier": "2026-11-23T19:10:19+00:00",
+        "Emetteur": "1524"
+    },
+    "Simul": {
+        "CdEntVigiCru": "E540031001",
+        "TypEntVigiCru": "7",
+        "LbEntVigiCru": "Brimeux",
+        "Link": "https://www.vigicrues.gouv.fr/services/v1.1/StaEntVigiCru.json?CdEntVigiCru=E540031001\u0026TypEntVigiCru=7",
+        "GrdSimul": "Q",
+        "DtProdSimul": "2026-11-23T14:21:24+01:00",
+        "CommentSimul": "Comment lire les courbes de prévision (tendances) : la tendance basse a 9 chances sur 10 d\u0027être dépassée. La tendance centrale a 5 chances sur 10 d\u0027être dépassée. La tendance haute a 1 chance sur 10 d\u0027être dépassée. Cela signifie notamment que les observations peuvent se situer en dehors de l\u0027intervalle de prévision (en moyenne dans 20% du temps).\nPrévision réalisée le 23/11/2026 à 14h15.",
+        "Prevs": [
+            {
+                "DtPrev": "2026-11-23T21:00:00+01:00",
+                "ResMinPrev": 24.29,
+                "ResMoyPrev": 26.54,
+                "ResMaxPrev": 28.99
+            },
+            {
+                "DtPrev": "2026-11-23T22:00:00+01:00",
+                "ResMinPrev": 24.06,
+                "ResMoyPrev": 26.29,
+                "ResMaxPrev": 28.68
+            },
+            {
+                "DtPrev": "2026-11-23T23:00:00+01:00",
+                "ResMinPrev": 23.84,
+                "ResMoyPrev": 26.03,
+                "ResMaxPrev": 28.37
+            },
+            {
+                "DtPrev": "2026-11-24T00:00:00+01:00",
+                "ResMinPrev": 23.62,
+                "ResMoyPrev": 25.81,
+                "ResMaxPrev": 28.1
+            },
+            {
+                "DtPrev": "2026-11-24T01:00:00+01:00",
+                "ResMinPrev": 23.39,
+                "ResMoyPrev": 25.57,
+                "ResMaxPrev": 27.78
+            },
+            {
+                "DtPrev": "2026-11-24T02:00:00+01:00",
+                "ResMinPrev": 23.19,
+                "ResMoyPrev": 25.4,
+                "ResMaxPrev": 27.45
+            },
+            {
+                "DtPrev": "2026-11-24T03:00:00+01:00",
+                "ResMinPrev": 23,
+                "ResMoyPrev": 25.25,
+                "ResMaxPrev": 27.12
+            },
+            {
+                "DtPrev": "2026-11-24T04:00:00+01:00",
+                "ResMinPrev": 22.81,
+                "ResMoyPrev": 25.12,
+                "ResMaxPrev": 26.86
+            },
+            {
+                "DtPrev": "2026-11-24T05:00:00+01:00",
+                "ResMinPrev": 22.62,
+                "ResMoyPrev": 24.97,
+                "ResMaxPrev": 26.71
+            },
+            {
+                "DtPrev": "2026-11-24T06:00:00+01:00",
+                "ResMinPrev": 22.43,
+                "ResMoyPrev": 24.83,
+                "ResMaxPrev": 26.55
+            },
+            {
+                "DtPrev": "2026-11-24T07:00:00+01:00",
+                "ResMinPrev": 22.24,
+                "ResMoyPrev": 24.68,
+                "ResMaxPrev": 26.38
+            },
+            {
+                "DtPrev": "2026-11-24T08:00:00+01:00",
+                "ResMinPrev": 22.04,
+                "ResMoyPrev": 24.53,
+                "ResMaxPrev": 26.22
+            },
+            {
+                "DtPrev": "2026-11-24T09:00:00+01:00",
+                "ResMinPrev": 21.85,
+                "ResMoyPrev": 24.4,
+                "ResMaxPrev": 26.09
+            },
+            {
+                "DtPrev": "2026-11-24T10:00:00+01:00",
+                "ResMinPrev": 21.67,
+                "ResMoyPrev": 24.25,
+                "ResMaxPrev": 25.93
+            },
+            {
+                "DtPrev": "2026-11-24T11:00:00+01:00",
+                "ResMinPrev": 21.49,
+                "ResMoyPrev": 24.11,
+                "ResMaxPrev": 25.77
+            },
+            {
+                "DtPrev": "2026-11-24T12:00:00+01:00",
+                "ResMinPrev": 21.31,
+                "ResMoyPrev": 23.97,
+                "ResMaxPrev": 25.62
+            },
+            {
+                "DtPrev": "2026-11-24T13:00:00+01:00",
+                "ResMinPrev": 21.15,
+                "ResMoyPrev": 23.82,
+                "ResMaxPrev": 25.48
+            },
+            {
+                "DtPrev": "2026-11-24T14:00:00+01:00",
+                "ResMinPrev": 20.96,
+                "ResMoyPrev": 23.69,
+                "ResMaxPrev": 25.41
+            },
+            {
+                "DtPrev": "2026-11-24T15:00:00+01:00",
+                "ResMinPrev": 20.78,
+                "ResMoyPrev": 23.54,
+                "ResMaxPrev": 25.32
+            },
+            {
+                "DtPrev": "2026-11-24T16:00:00+01:00",
+                "ResMinPrev": 20.63,
+                "ResMoyPrev": 23.4,
+                "ResMaxPrev": 25.24
+            },
+            {
+                "DtPrev": "2026-11-24T17:00:00+01:00",
+                "ResMinPrev": 20.46,
+                "ResMoyPrev": 23.23,
+                "ResMaxPrev": 25.18
+            },
+            {
+                "DtPrev": "2026-11-24T18:00:00+01:00",
+                "ResMinPrev": 20.29,
+                "ResMoyPrev": 23.07,
+                "ResMaxPrev": 25.1
+            },
+            {
+                "DtPrev": "2026-11-24T19:00:00+01:00",
+                "ResMinPrev": 20.13,
+                "ResMoyPrev": 22.91,
+                "ResMaxPrev": 25.04
+            },
+            {
+                "DtPrev": "2026-11-24T20:00:00+01:00",
+                "ResMinPrev": 19.99,
+                "ResMoyPrev": 22.78,
+                "ResMaxPrev": 24.97
+            },
+            {
+                "DtPrev": "2026-11-24T21:00:00+01:00",
+                "ResMinPrev": 19.85,
+                "ResMoyPrev": 22.67,
+                "ResMaxPrev": 24.91
+            },
+            {
+                "DtPrev": "2026-11-24T22:00:00+01:00",
+                "ResMinPrev": 19.72,
+                "ResMoyPrev": 22.56,
+                "ResMaxPrev": 24.85
+            },
+            {
+                "DtPrev": "2026-11-24T23:00:00+01:00",
+                "ResMinPrev": 19.58,
+                "ResMoyPrev": 22.43,
+                "ResMaxPrev": 24.79
+            }
+        ]
+    }
+}

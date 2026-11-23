@@ -63,6 +63,7 @@ asyncio.run(main())
 | Method | Returns |
 |---|---|
 | `get_observations(station, quantity)` | Recent heights or flow rates observed at a station |
+| `get_forecast(station, quantity)` | Latest forecast of heights or flow rates at a station (low, central and high trends), or `None` if there is none |
 | `get_station(station)` | Details of a station: river, territory, historical floods, stations of the basin |
 | `get_territory(territory)` | A flood vigilance territory and its river sections |
 | `get_river_section(section)` | A river section, its territory and its stations |

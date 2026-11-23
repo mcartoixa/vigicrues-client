@@ -20,8 +20,10 @@ from ._errors import (
     VigicruesResponseError,
     VigicruesUnknownValueError,
 )
+from ._forecasts import NO_FORECAST_MESSAGES, parse_forecast
 from ._models import (
     EntityType,
+    Forecast,
     ObservationSeries,
     Quantity,
     RiverSection,
@@ -136,10 +138,7 @@ class VigicruesClient:
             },
         )
         series = parse_observation_series(data)
-        if series.quantity is not quantity:
-            raise VigicruesResponseError(
-                f"Expected {quantity.name} observations, got {series.quantity.name}"
-            )
+        _check_quantity(quantity, series.quantity, "observations")
         return series
 
     async def get_station(self, station: str) -> Station:
@@ -167,6 +166,48 @@ class VigicruesClient:
                 raise
             raise rejection_error from error
         return parse_station(data)
+
+    async def get_forecast(
+        self, station: str, quantity: Quantity = Quantity.HEIGHT
+    ) -> Forecast | None:
+        """Get the latest forecast of a station.
+
+        The forecast starts after the latest observation of the station.
+
+        Args:
+            station: Code of the hydrometric station, e.g. `"E540031001"`.
+            quantity: Forecast quantity: heights in metres, or flow rates in cubic
+                metres per second.
+
+        Returns:
+            The forecast, or `None` if the service has none for the station: none
+            at the moment, not a forecast station (see
+            `Station.is_forecast_station`), or unknown or invalid station code.
+
+        Raises:
+            VigicruesError: The forecast could not be retrieved.
+        """
+        try:
+            data = await self._get_json(
+                "services/v1.1/prevision.json",
+                {
+                    "CdEntVigiCru": station,
+                    "TypEntVigiCru": EntityType.STATION.value,
+                    "GrdSimul": quantity.value,
+                    "FormatDate": "iso",
+                },
+            )
+        except VigicruesApiError as error:
+            # The service reports the absence of a forecast with code 204.
+            if (
+                error.code == HTTPStatus.NO_CONTENT
+                and error.message in NO_FORECAST_MESSAGES
+            ):
+                return None
+            raise
+        forecast = parse_forecast(data)
+        _check_quantity(quantity, forecast.quantity, "forecast")
+        return forecast
 
     async def get_territory(self, territory: str) -> Territory:
         """Get a flood vigilance territory and its river sections.
@@ -400,6 +441,14 @@ class VigicruesClient:
         if self._session is None:
             self._session = aiohttp.ClientSession(headers={"User-Agent": _USER_AGENT})
         return self._session
+
+
+def _check_quantity(expected: Quantity, actual: Quantity, values: str) -> None:
+    """Raise if the service sent values of another quantity than the requested one."""
+    if actual is not expected:
+        raise VigicruesResponseError(
+            f"Expected {expected.name} {values}, got {actual.name}"
+        )
 
 
 def _raise_for_api_error(data: object) -> None:

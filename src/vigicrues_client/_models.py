@@ -77,6 +77,50 @@ class ObservationSeries:
 
 
 @dataclass(frozen=True, slots=True)
+class ForecastPoint:
+    """Values forecast at a station for a given time, as three trends.
+
+    The observed value may lie outside of the range between the low and high
+    trends.
+
+    Attributes:
+        time: Time of the forecast, with the offset sent by the service (local
+            time).
+        low: Low trend: 9 chances in 10 of being exceeded.
+        central: Central trend: 5 chances in 10 of being exceeded.
+        high: High trend: 1 chance in 10 of being exceeded.
+    """
+
+    time: datetime
+    low: float
+    central: float
+    high: float
+
+
+@dataclass(frozen=True, slots=True)
+class Forecast:
+    """Forecast of a quantity at a station, after its latest observation.
+
+    Attributes:
+        station_code: Code of the hydrometric station, e.g. `"E540031001"`.
+        station_name: Name of the station, as sent by the service, e.g. `"Brimeux"`.
+        quantity: Forecast quantity.
+        production_time: Time the forecast was produced, with the offset sent by
+            the service (local time).
+        comment: Comment sent with the forecast, in French, e.g. how to read the
+            trends and when the forecast was made.
+        points: Forecast values, from the earliest to the latest time.
+    """
+
+    station_code: str
+    station_name: str
+    quantity: Quantity
+    production_time: datetime
+    comment: str
+    points: tuple[ForecastPoint, ...]
+
+
+@dataclass(frozen=True, slots=True)
 class HistoricalFlood:
     """Past flood recorded at a station.
 

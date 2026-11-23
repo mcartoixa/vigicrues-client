@@ -14,6 +14,8 @@ from ._errors import (
 from ._models import (
     BasinStation,
     BulletinRiverSection,
+    Forecast,
+    ForecastPoint,
     HistoricalFlood,
     Observation,
     ObservationSeries,
@@ -32,6 +34,8 @@ from ._models import (
 __all__ = [
     "BasinStation",
     "BulletinRiverSection",
+    "Forecast",
+    "ForecastPoint",
     "HistoricalFlood",
     "Observation",
     "ObservationSeries",

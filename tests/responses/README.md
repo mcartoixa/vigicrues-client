@@ -33,7 +33,12 @@ Vigicrues content is published under the
 | `observations_O262002001.json` | `/services/observations.json?CdStationHydro=O262002001&FormatDate=iso` | 200 | `application/json` | 2026-11-21 18:55 UTC |
 | `observations_unknown.json` | `/services/observations.json?CdStationHydro=X000000000` | 200 | `application/json` | 2026-11-21 18:27 UTC |
 | `page_not_found.html` | `/services/1/InfoVigiCru.json` | 404 | `text/html; charset=UTF-8` | 2026-11-21 18:27 UTC |
+| `prevision_E540031001.json` | `/services/v1.1/prevision.json?CdEntVigiCru=E540031001&TypEntVigiCru=7&GrdSimul=H&FormatDate=iso` | 200 | `application/json;charset=UTF-8` | 2026-11-23 19:10 UTC |
+| `prevision_E540031001_Q.json` | `/services/v1.1/prevision.json?CdEntVigiCru=E540031001&TypEntVigiCru=7&GrdSimul=Q&FormatDate=iso` | 200 | `application/json;charset=UTF-8` | 2026-11-23 19:10 UTC |
+| `prevision_invalid_quantity.json` | `/services/v1.1/prevision.json?CdEntVigiCru=E540031001&TypEntVigiCru=7&GrdSimul=X&FormatDate=iso` | 200 | `application/json;charset=UTF-8` | 2026-11-23 19:10 UTC |
 | `prevision_no_forecast.json` | `/services/v1.1/prevision.json?CdEntVigiCru=O262002001&TypEntVigiCru=7` | 200 | `application/json;charset=UTF-8` | 2026-11-21 18:28 UTC |
+| `prevision_not_forecast_station.json` | `/services/v1.1/prevision.json?CdEntVigiCru=E541000401&TypEntVigiCru=7&GrdSimul=H&FormatDate=iso` | 200 | `application/json;charset=UTF-8` | 2026-11-23 19:10 UTC |
+| `prevision_unknown.json` | `/services/v1.1/prevision.json?CdEntVigiCru=X000000000&TypEntVigiCru=7&GrdSimul=H&FormatDate=iso` | 200 | `application/json;charset=UTF-8` | 2026-11-23 19:10 UTC |
 | `StaEntVigiCru_E540031001.json` | `/services/v1.1/StaEntVigiCru.json?CdEntVigiCru=E540031001&TypEntVigiCru=7` | 200 | `application/json;charset=UTF-8` | 2026-11-21 19:11 UTC |
 | `StaEntVigiCru_unknown.json` | `/services/v1.1/StaEntVigiCru.json?CdEntVigiCru=X000000000&TypEntVigiCru=7` | 200 | `application/json;charset=UTF-8` | 2026-11-21 18:27 UTC |
 | `station_E540031001.json` | `/services/station.json?CdStationHydro=E540031001` | 200 | `application/json` | 2026-11-21 19:10 UTC |

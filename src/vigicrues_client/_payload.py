@@ -1,6 +1,7 @@
 """Typed access to the JSON values sent by the Vigicrues service."""
 
 from ._errors import VigicruesResponseError
+from ._models import Quantity
 
 # Sent by the referential in place of the values it does not have.
 _PLACEHOLDERS = frozenset({"A renseigner obligatoirement", "A renseigner"})
@@ -34,6 +35,15 @@ def get_str(parent: dict[str, object], key: str) -> str:
     if not isinstance(value, str):
         raise VigicruesResponseError(f"Expected a string for {key}, got {value!r:.80}")
     return value
+
+
+def get_quantity(parent: dict[str, object], key: str) -> Quantity:
+    """Return the quantity whose code is the JSON string `parent[key]`."""
+    code = get_str(parent, key)
+    try:
+        return Quantity(code)
+    except ValueError as error:
+        raise VigicruesResponseError(f"Unknown quantity {code!r}") from error
 
 
 def get_optional_str(parent: dict[str, object], key: str) -> str | None:
