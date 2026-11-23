@@ -67,6 +67,9 @@ asyncio.run(main())
 | `get_station(station)` | Details of a station: river, territory, historical floods, stations of the basin |
 | `get_territory(territory)` | A flood vigilance territory and its river sections |
 | `get_river_section(section)` | A river section, its territory and its stations |
+| `get_territories()` | All the flood vigilance territories: code and name |
+| `get_river_sections()` | All the river sections: code and name |
+| `get_stations()` | All the stations: code, name and river |
 | `get_vigilance_levels()` | Vigilance levels of all the river sections of metropolitan France |
 | `get_vigilance_level(section)` | Vigilance level of a river section |
 | `get_territory_bulletin(territory)` | Vigilance bulletin of a territory: situation, comments, levels of the river sections |
@@ -74,6 +77,19 @@ asyncio.run(main())
 
 The bulletins are read from the HTML pages of the Vigicrues web site, and are the most likely to break
 when the site changes.
+
+### Finding codes
+
+The methods take the codes of the Vigicrues entities. To find them, filter the listings, e.g. the
+stations of a river:
+
+```python
+async with VigicruesClient() as client:
+    stations = await client.get_stations()
+for station in stations:
+    if station.river == "Canche":
+        print(station.code, station.name)
+```
 
 ### HTTP session
 

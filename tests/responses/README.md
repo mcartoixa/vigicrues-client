@@ -18,6 +18,9 @@ Exceptions:
   not in green vigilance (`RS18`, `RS31`, `RS41`, `NO14` yellow, `AP16` orange), `MP18` and the
   last one, `DO10` (both green). The service sends one river section per line: the lines kept are
   byte for byte, the first two and the last one (the production time) included.
+- `StaEntVigiCru_all_trimmed.json` keeps only 4 of the 2,376 stations received (1.7 MB): the first
+  two (Guyane), `E540031001` (Brimeux) and the last one. Each station is a block of lines kept
+  byte for byte, the rest of the body (`"count": 2376` included) being unchanged.
 
 Vigicrues content is published under the
 [Etalab Open Licence 2.0](https://www.etalab.gouv.fr/licence-ouverte-open-licence/).
@@ -39,6 +42,7 @@ Vigicrues content is published under the
 | `prevision_no_forecast.json` | `/services/v1.1/prevision.json?CdEntVigiCru=O262002001&TypEntVigiCru=7` | 200 | `application/json;charset=UTF-8` | 2026-11-21 18:28 UTC |
 | `prevision_not_forecast_station.json` | `/services/v1.1/prevision.json?CdEntVigiCru=E541000401&TypEntVigiCru=7&GrdSimul=H&FormatDate=iso` | 200 | `application/json;charset=UTF-8` | 2026-11-23 19:10 UTC |
 | `prevision_unknown.json` | `/services/v1.1/prevision.json?CdEntVigiCru=X000000000&TypEntVigiCru=7&GrdSimul=H&FormatDate=iso` | 200 | `application/json;charset=UTF-8` | 2026-11-23 19:10 UTC |
+| `StaEntVigiCru_all_trimmed.json` | `/services/v1.1/StaEntVigiCru.json` | 200 | `application/json;charset=UTF-8` | 2026-11-23 19:22 UTC |
 | `StaEntVigiCru_E540031001.json` | `/services/v1.1/StaEntVigiCru.json?CdEntVigiCru=E540031001&TypEntVigiCru=7` | 200 | `application/json;charset=UTF-8` | 2026-11-21 19:11 UTC |
 | `StaEntVigiCru_unknown.json` | `/services/v1.1/StaEntVigiCru.json?CdEntVigiCru=X000000000&TypEntVigiCru=7` | 200 | `application/json;charset=UTF-8` | 2026-11-21 18:27 UTC |
 | `station_E540031001.json` | `/services/station.json?CdStationHydro=E540031001` | 200 | `application/json` | 2026-11-21 19:10 UTC |
@@ -46,8 +50,10 @@ Vigicrues content is published under the
 | `station_invalid.json` | `/services/station.json?CdStationHydro=E54003100` | 200 | `application/json` | 2026-11-22 07:33 UTC |
 | `station_unknown.html` | `/services/station.json?CdStationHydro=X000000000` | 500 | `text/html` | 2026-11-21 18:27 UTC |
 | `TerEntVigiCru_0.json` | `/services/v1.1/TerEntVigiCru.json?CdEntVigiCru=0&TypEntVigiCru=5` | 200 | `application/json;charset=UTF-8` | 2026-11-22 07:03 UTC |
+| `TerEntVigiCru_all.json` | `/services/v1.1/TerEntVigiCru.json` | 200 | `application/json;charset=UTF-8` | 2026-11-23 19:22 UTC |
 | `TerEntVigiCru_25.json` | `/services/v1.1/TerEntVigiCru.json?CdEntVigiCru=25&TypEntVigiCru=5` | 200 | `application/json;charset=UTF-8` | 2026-11-22 07:03 UTC |
 | `TerEntVigiCru_unknown.json` | `/services/v1.1/TerEntVigiCru.json?CdEntVigiCru=99&TypEntVigiCru=5` | 200 | `application/json;charset=UTF-8` | 2026-11-22 07:04 UTC |
+| `TronEntVigiCru_all.json` | `/services/v1.1/TronEntVigiCru.json` | 200 | `application/json;charset=UTF-8` | 2026-11-23 19:22 UTC |
 | `TronEntVigiCru_AP16.json` | `/services/v1.1/TronEntVigiCru.json?CdEntVigiCru=AP16&TypEntVigiCru=8` | 200 | `application/json;charset=UTF-8` | 2026-11-21 18:31 UTC |
 | `TronEntVigiCru_invalid.json` | `/services/v1.1/TronEntVigiCru.json?CdEntVigiCru=ap16&TypEntVigiCru=8` | 200 | `application/json;charset=UTF-8` | 2026-11-22 07:07 UTC |
 | `TronEntVigiCru_MP1.json` | `/services/v1.1/TronEntVigiCru.json?CdEntVigiCru=MP1&TypEntVigiCru=8` | 200 | `application/json;charset=UTF-8` | 2026-11-22 07:07 UTC |

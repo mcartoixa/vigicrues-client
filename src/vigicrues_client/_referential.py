@@ -1,6 +1,14 @@
 """Entities sent by the v1.1 referential (`TerEntVigiCru`, `TronEntVigiCru`...)."""
 
-from ._models import RiverSection, RiverSectionStation, Territory, TerritoryRiverSection
+from ._models import (
+    RiverSection,
+    RiverSectionStation,
+    RiverSectionSummary,
+    StationSummary,
+    Territory,
+    TerritoryRiverSection,
+    TerritorySummary,
+)
 from ._payload import as_object, get_list, get_object, get_optional_str, get_str
 
 
@@ -52,6 +60,31 @@ def parse_river_section(entity: dict[str, object]) -> RiverSection:
             )
             for child in _get_children(entity)
         ),
+    )
+
+
+def parse_territory_summary(entity: dict[str, object]) -> TerritorySummary:
+    """Parse a territory of the list of all the territories."""
+    return TerritorySummary(
+        code=get_str(entity, "CdEntVigiCru"),
+        name=get_optional_str(entity, "LbEntVigiCru"),
+    )
+
+
+def parse_river_section_summary(entity: dict[str, object]) -> RiverSectionSummary:
+    """Parse a river section of the list of all the river sections."""
+    return RiverSectionSummary(
+        code=get_str(entity, "CdEntVigiCru"),
+        name=get_optional_str(entity, "LbEntVigiCru"),
+    )
+
+
+def parse_station_summary(entity: dict[str, object]) -> StationSummary:
+    """Parse a station of the list of all the stations."""
+    return StationSummary(
+        code=get_str(entity, "CdEntVigiCru"),
+        name=get_optional_str(entity, "LbEntVigiCru"),
+        river=get_optional_str(entity, "LbCoursEau"),
     )
 
 

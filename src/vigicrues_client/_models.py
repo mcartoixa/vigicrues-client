@@ -177,6 +177,23 @@ class Station:
 
 
 @dataclass(frozen=True, slots=True)
+class StationSummary:
+    """Station of the list of all the stations of the flood vigilance network.
+
+    Values the service does not have are `None`.
+
+    Attributes:
+        code: Code of the hydrometric station, e.g. `"E540031001"`.
+        name: Name of the station, as sent by the service, e.g. `"Brimeux"`.
+        river: Name of the river, e.g. `"Canche"`.
+    """
+
+    code: str
+    name: str | None
+    river: str | None
+
+
+@dataclass(frozen=True, slots=True)
 class TerritoryRiverSection:
     """River section of a flood vigilance territory.
 
@@ -207,6 +224,21 @@ class Territory:
     code: str
     name: str | None
     river_sections: tuple[TerritoryRiverSection, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class TerritorySummary:
+    """Territory of the list of all the flood vigilance territories.
+
+    Values the service does not have are `None`.
+
+    Attributes:
+        code: Code of the territory, e.g. `"25"`.
+        name: Name of the territory, e.g. `"Garonne-Tarn-Lot"`.
+    """
+
+    code: str
+    name: str | None
 
 
 @dataclass(frozen=True, slots=True)
@@ -241,6 +273,21 @@ class RiverSection:
     name: str | None
     territory_code: str | None
     stations: tuple[RiverSectionStation, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class RiverSectionSummary:
+    """River section of the list of all the river sections.
+
+    Values the service does not have are `None`.
+
+    Attributes:
+        code: Code of the river section, e.g. `"MP18"`.
+        name: Name of the river section, e.g. `"Garonne toulousaine"`.
+    """
+
+    code: str
+    name: str | None
 
 
 @dataclass(frozen=True, slots=True)

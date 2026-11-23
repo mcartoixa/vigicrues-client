@@ -27,10 +27,13 @@ from ._models import (
     ObservationSeries,
     Quantity,
     RiverSection,
+    RiverSectionSummary,
     RiverSectionVigilance,
     Station,
+    StationSummary,
     Territory,
     TerritoryBulletin,
+    TerritorySummary,
     VigilanceLevel,
     VigilanceLevels,
 )
@@ -39,7 +42,10 @@ from ._referential import (
     find_entity,
     get_entities,
     parse_river_section,
+    parse_river_section_summary,
+    parse_station_summary,
     parse_territory,
+    parse_territory_summary,
 )
 from ._stations import parse_station
 from ._vigilance import parse_vigilance_levels
@@ -262,6 +268,44 @@ class VigicruesClient:
             raise VigicruesUnknownValueError(f"Unknown river section {section!r}")
         return parse_river_section(entity)
 
+    async def get_territories(self) -> tuple[TerritorySummary, ...]:
+        """Get all the flood vigilance territories.
+
+        Returns:
+            The territories, in the order sent by the service.
+
+        Raises:
+            VigicruesError: The territories could not be retrieved.
+        """
+        entities = await self._get_listing("TerEntVigiCru.json")
+        return tuple(parse_territory_summary(entity) for entity in entities)
+
+    async def get_river_sections(self) -> tuple[RiverSectionSummary, ...]:
+        """Get all the river sections.
+
+        Returns:
+            The river sections, in the order sent by the service.
+
+        Raises:
+            VigicruesError: The river sections could not be retrieved.
+        """
+        entities = await self._get_listing("TronEntVigiCru.json")
+        return tuple(parse_river_section_summary(entity) for entity in entities)
+
+    async def get_stations(self) -> tuple[StationSummary, ...]:
+        """Get all the stations of the flood vigilance network.
+
+        The service sends them all at once (about 1.7 MB).
+
+        Returns:
+            The stations, in the order sent by the service.
+
+        Raises:
+            VigicruesError: The stations could not be retrieved.
+        """
+        entities = await self._get_listing("StaEntVigiCru.json")
+        return tuple(parse_station_summary(entity) for entity in entities)
+
     async def get_vigilance_levels(self) -> VigilanceLevels:
         """Get the current flood vigilance levels of all the river sections.
 
@@ -389,6 +433,10 @@ class VigicruesClient:
             {"CdEntVigiCru": code, "TypEntVigiCru": entity_type.value},
         )
         return get_entities(data)
+
+    async def _get_listing(self, file: str) -> list[dict[str, object]]:
+        """Return all the entities of the v1.1 referential."""
+        return get_entities(await self._get_json(f"services/v1.1/{file}"))
 
     async def _get_json(
         self, path: str, params: Mapping[str, str] | None = None

@@ -1,0 +1,72 @@
+{
+    "Scenario": {
+        "Flux": {
+            "Version": "1",
+            "DateRevision": "2019-07-02T15:00:00"
+        },
+        "CodeScenario": "VIC",
+        "VersionScenario": "1.1",
+        "NomScenario": "Référentiels et données de la vigilance crues métropolitaine",
+        "DateHeureCreationFichier": "2026-11-23T19:22:24+00:00",
+        "Emetteur": "1524"
+    },
+    "count": 2376,
+    "ListEntVigiCru": [
+        {
+            "CdEntVigiCru": "5041000101",
+            "TypEntVigiCru": "8",
+            "LbEntVigiCru": "Apatou",
+            "CdDistrictEntVigiCru_1": "A renseigner obligatoirement",
+            "DtHrCreatEntVigiCru": "A renseigner obligatoirement",
+            "DtHrMajEntVigiCru": "A renseigner obligatoirement",
+            "StEntVigiCru": "Validé",
+            "CdTCC": "A renseigner obligatoirement",
+            "CdInt": "A renseigner obligatoirement",
+            "LbCoursEau": "Maroni",
+            "CdStationHydroAncienRef": "",
+            "Link": "https://www.vigicrues.gouv.fr/services/\n                    StaEntVigiCru.json?CdEntVigiCru=5041000101\u0026TypEntVigiCru=7"
+        },
+        {
+            "CdEntVigiCru": "5061000101",
+            "TypEntVigiCru": "8",
+            "LbEntVigiCru": "St-Laurent-du-Maroni [Au port]",
+            "CdDistrictEntVigiCru_1": "A renseigner obligatoirement",
+            "DtHrCreatEntVigiCru": "A renseigner obligatoirement",
+            "DtHrMajEntVigiCru": "A renseigner obligatoirement",
+            "StEntVigiCru": "Validé",
+            "CdTCC": "A renseigner obligatoirement",
+            "CdInt": "A renseigner obligatoirement",
+            "LbCoursEau": "Maroni",
+            "CdStationHydroAncienRef": "0",
+            "Link": "https://www.vigicrues.gouv.fr/services/\n                    StaEntVigiCru.json?CdEntVigiCru=5061000101\u0026TypEntVigiCru=7"
+        },
+        {
+            "CdEntVigiCru": "E540031001",
+            "TypEntVigiCru": "8",
+            "LbEntVigiCru": "Brimeux",
+            "CdDistrictEntVigiCru_1": "A renseigner obligatoirement",
+            "DtHrCreatEntVigiCru": "A renseigner obligatoirement",
+            "DtHrMajEntVigiCru": "A renseigner obligatoirement",
+            "StEntVigiCru": "Validé",
+            "CdTCC": "A renseigner obligatoirement",
+            "CdInt": "A renseigner obligatoirement",
+            "LbCoursEau": "Canche",
+            "CdStationHydroAncienRef": "0",
+            "Link": "https://www.vigicrues.gouv.fr/services/\n                    StaEntVigiCru.json?CdEntVigiCru=E540031001\u0026TypEntVigiCru=7"
+        },
+        {
+            "CdEntVigiCru": "Y980000302",
+            "TypEntVigiCru": "8",
+            "LbEntVigiCru": "Porto-Vecchio [Pont de Bala]",
+            "CdDistrictEntVigiCru_1": "A renseigner obligatoirement",
+            "DtHrCreatEntVigiCru": "A renseigner obligatoirement",
+            "DtHrMajEntVigiCru": "A renseigner obligatoirement",
+            "StEntVigiCru": "Validé",
+            "CdTCC": "A renseigner obligatoirement",
+            "CdInt": "A renseigner obligatoirement",
+            "LbCoursEau": "Bala",
+            "CdStationHydroAncienRef": "0",
+            "Link": "https://www.vigicrues.gouv.fr/services/\n                    StaEntVigiCru.json?CdEntVigiCru=Y980000302\u0026TypEntVigiCru=7"
+        }
+    ]
+}
